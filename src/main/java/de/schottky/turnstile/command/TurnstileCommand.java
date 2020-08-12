@@ -3,7 +3,7 @@ package de.schottky.turnstile.command;
 import com.github.schottky.zener.command.Cmd;
 import com.github.schottky.zener.command.CommandBase;
 
-@Cmd(name = "turnstile", maxArgs = 1)
+@Cmd(name = "turnstile", maxArgs = 0)
 public class TurnstileCommand extends CommandBase {
 
     public TurnstileCommand() {

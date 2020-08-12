@@ -22,7 +22,7 @@ public class TurnstileActivateCommand extends SubCommand {
             @NotNull String label,
             @NotNull String[] args)
     {
-        TurnstileManager.activateAllTurnstiles();
+        TurnstileManager.activateAllTurnstiles(player);
         return true;
     }
 }

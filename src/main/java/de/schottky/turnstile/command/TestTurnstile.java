@@ -9,22 +9,22 @@ import java.util.Collections;
 
 public class TestTurnstile extends AbstractTurnstile {
 
-    private final Collection<TurnstilePart> parts;
+    private TurnstilePart onlyPart;
 
-    public TestTurnstile(Collection<TurnstilePart> parts) {
-        this.parts = new ArrayList<>(parts);
+    public TestTurnstile(TurnstilePart onlyPart) {
+        this.onlyPart = onlyPart;
     }
 
     public TestTurnstile() {
-        this.parts = new ArrayList<>();
+        this.onlyPart = null;
     }
 
-    public void addParts(Collection<TurnstilePart> parts) {
-        this.parts.addAll(parts);
+    public void addPart(TurnstilePart onlyPart) {
+        this.onlyPart = onlyPart;
     }
 
     @Override
     public Collection<TurnstilePart> allParts() {
-        return Collections.unmodifiableCollection(parts);
+        return Collections.singleton(onlyPart);
     }
 }

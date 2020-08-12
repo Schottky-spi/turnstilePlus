@@ -20,6 +20,7 @@ public abstract class AbstractTurnstile implements Turnstile {
             System.out.println(target);
             player.setVelocity(target.multiply(2));
         }
+        this.setOpen(currentStatus().isOpen);
     }
 
     @Override
@@ -31,6 +32,7 @@ public abstract class AbstractTurnstile implements Turnstile {
         }
         if (withdrawToll(player)) {
             acceptedPlayers.add(player.getUniqueId());
+            setOpen(true);
             return true;
         } else {
             return false;
@@ -45,5 +47,14 @@ public abstract class AbstractTurnstile implements Turnstile {
     protected boolean withdrawToll(Player player) {
         // TODO: Toll, Vault e.t.c
         return true;
+    }
+
+    @Override
+    public void setOpen(boolean open) {
+        for (TurnstilePart part: allParts()) {
+            part.setBlocking(!open);
+        }
+        if (!open)
+            acceptedPlayers.clear();
     }
 }

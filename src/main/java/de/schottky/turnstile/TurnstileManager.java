@@ -27,12 +27,12 @@ public class TurnstileManager {
         }
     }
 
-    public static void activateTurnstile(Turnstile t) {
-        activeTurnstiles.add(t);
+    public static void activateTurnstile(Turnstile t, Player player) {
+        if (t.requestActivation(player)) activeTurnstiles.add(t);
     }
 
-    public static void activateAllTurnstiles() {
-        activeTurnstiles.addAll(allTurnstiles);
+    public static void activateAllTurnstiles(Player player) {
+        for (Turnstile turnstile: allTurnstiles) activateTurnstile(turnstile, player);
     }
 
 }
