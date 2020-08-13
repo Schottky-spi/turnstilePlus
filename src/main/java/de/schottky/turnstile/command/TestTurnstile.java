@@ -17,7 +17,7 @@ public class TestTurnstile extends AbstractTurnstile {
     }
 
     @RequiredConstructor
-    public TestTurnstile() {
+    private TestTurnstile() {
         super(null);
     }
 

@@ -7,7 +7,9 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation to mark that a constructor is required
- * for serialization and should therefore not be deleted
+ * for serialization and should therefore not be deleted.
+ * Required constructors should be private and not
+ * used in a regular fashion
  */
 @Retention(RetentionPolicy.SOURCE)
 @Target(ElementType.CONSTRUCTOR)
