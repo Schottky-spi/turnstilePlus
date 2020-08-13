@@ -3,6 +3,7 @@ package de.schottky.turnstile;
 import com.github.schottky.zener.api.Zener;
 import com.github.schottky.zener.command.Commands;
 import de.schottky.turnstile.command.TurnstileCommand;
+import de.schottky.turnstile.event.ButtonClickListener;
 import de.schottky.turnstile.event.PlayerMoveListener;
 import de.schottky.turnstile.persistence.TurnstilePersistence;
 import org.bukkit.Bukkit;
@@ -19,6 +20,7 @@ public class TurnstilePlugin extends JavaPlugin {
         final PluginManager pluginManager = Bukkit.getPluginManager();
         final PlayerMoveListener listener = new PlayerMoveListener();
         pluginManager.registerEvents(listener, this);
+        pluginManager.registerEvents(new ButtonClickListener(), this);
 
         TurnstileManager.createInstance(listener);
         TurnstilePersistence.loadAll();
@@ -28,5 +30,9 @@ public class TurnstilePlugin extends JavaPlugin {
     public void onDisable() {
         Zener.end();
         TurnstilePersistence.saveAll();
+    }
+
+    public static TurnstilePlugin instance() {
+        return JavaPlugin.getPlugin(TurnstilePlugin.class);
     }
 }

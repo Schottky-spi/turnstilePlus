@@ -9,8 +9,10 @@ import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileManager;
 import de.schottky.turnstile.TurnstilePart;
 import de.schottky.turnstile.TurnstilePlugin;
+import de.schottky.turnstile.activator.TurnstileActivator;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -37,6 +39,7 @@ public final class TurnstilePersistence {
                 .registerTypeAdapter(Location.class, TypeAdapters.locationTypeAdapter)
                 .registerTypeAdapter(Turnstile.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeAdapter(TurnstilePart.class, TypeAdapters.appendingClassAdapter)
+                .registerTypeAdapter(TurnstileActivator.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeHierarchyAdapter(BlockData.class, TypeAdapters.blockDataTypeAdapter)
                 .create();
     }
@@ -48,10 +51,16 @@ public final class TurnstilePersistence {
         }
     }
 
+    public static void saveAllAsyncFor(UUID uuid) {
+        saveAsync(uuid, TurnstileManager.instance().allTurnstilesForPlayer(uuid));
+    }
+
     public static void saveAsync(UUID uuid, Collection<Turnstile> turnstiles) {
         Executors.newSingleThreadExecutor().submit(() -> save(uuid, turnstiles));
     }
 
+    // Use the async alternative
+    @Deprecated
     public static void save(UUID uuid, Collection<Turnstile> turnstile) {
         final File file = getPlayerFile(uuid);
         final String json = gson.toJson(turnstile.toArray(new Turnstile[0]));

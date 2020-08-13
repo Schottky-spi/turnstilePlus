@@ -1,5 +1,6 @@
 package de.schottky.turnstile;
 
+import de.schottky.turnstile.activator.TurnstileActivator;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockFace;
@@ -81,6 +82,19 @@ public interface Turnstile {
     default @NotNull OfflinePlayer owningPlayer() {
         return Bukkit.getOfflinePlayer(ownerUUID());
     }
+
+    /**
+     * adds an activator that activates this turnstile (opens it)
+     * @param activator The activator to add
+     */
+
+    void addActivator(TurnstileActivator activator);
+
+    /**
+     * called after the initial load has been performed to do additional
+     * tasks with the data
+     */
+    void initAfterLoad();
 
     enum Status {
         OPEN(true),

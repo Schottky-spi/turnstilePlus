@@ -44,8 +44,12 @@ public final class TurnstileManager {
      * @return The turnstiles of this player
      */
     public Collection<Turnstile> allTurnstilesForPlayer(Player player) {
+        return allTurnstilesForPlayer(player.getUniqueId());
+    }
+
+    public Collection<Turnstile> allTurnstilesForPlayer(UUID playerUUID) {
         return allTurnstiles.stream()
-                .filter(turnstile -> turnstile.ownerUUID().equals(player.getUniqueId()))
+                .filter(turnstile -> turnstile.ownerUUID().equals(playerUUID))
                 .collect(Collectors.toSet());
     }
 
@@ -69,7 +73,7 @@ public final class TurnstileManager {
     public void loadTurnstileData(Multimap<UUID,Turnstile> turnstileData) {
         allTurnstiles.clear();
         allTurnstiles.addAll(turnstileData.values());
-        allTurnstiles.forEach(turnstile -> turnstile.setOpen(false));
+        allTurnstiles.forEach(Turnstile::initAfterLoad);
     }
 
     /**
@@ -116,8 +120,12 @@ public final class TurnstileManager {
     }
 
     public Optional<Turnstile> forName(String name, Player owner) {
+        return forIdentification(name, owner.getUniqueId());
+    }
+
+    public Optional<Turnstile> forIdentification(String name, UUID uuid) {
         return allTurnstiles.stream()
-                .filter(t -> t.ownerUUID().equals(owner.getUniqueId()) &&
+                .filter(t -> t.ownerUUID().equals(uuid) &&
                         t.name().equalsIgnoreCase(name))
                 .findFirst();
     }

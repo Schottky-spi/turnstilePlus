@@ -1,6 +1,10 @@
 package de.schottky.turnstile;
 
+import com.google.gson.annotations.JsonAdapter;
+import de.schottky.turnstile.activator.TurnstileActivator;
 import de.schottky.turnstile.persistence.RequiredConstructor;
+import de.schottky.turnstile.persistence.TurnstileActivatorSetAdapter;
+import de.schottky.turnstile.persistence.TurnstilePersistence;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
@@ -27,6 +31,21 @@ public abstract class AbstractTurnstile implements Turnstile {
      */
 
     private transient final Map<UUID,BlockFace> playersInTurnstile = new HashMap<>();
+
+    @JsonAdapter(TurnstileActivatorSetAdapter.class)
+    private final Set<TurnstileActivator> activators = new HashSet<>();
+
+    @Override
+    public void addActivator(TurnstileActivator activator) {
+        this.activators.add(activator);
+        TurnstilePersistence.saveAllAsyncFor(ownerUUID());
+    }
+
+    @Override
+    public void initAfterLoad() {
+        this.setOpen(false);
+        activators.forEach(activator -> activator.linkTurnstile(this));
+    }
 
     /**
      * The owner of the turnstile

@@ -17,6 +17,7 @@ public class TurnstileCommand extends CommandBase {
         this.registerSubCommands(
                 new TurnstileSetupCommand(this),
                 new TurnstileActivateCommand(this),
+                new TurnstileLinkCommand(this),
                 new List(this),
                 new Remove(this));
     }
