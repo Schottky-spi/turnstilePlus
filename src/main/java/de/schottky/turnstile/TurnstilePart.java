@@ -4,9 +4,7 @@ import org.bukkit.Location;
 
 public interface TurnstilePart {
 
-    Turnstile getTurnstile();
-
-    boolean isContainedIn(Location location);
+    boolean containsLocation(Location location);
 
     void setBlocking(boolean active);
 }

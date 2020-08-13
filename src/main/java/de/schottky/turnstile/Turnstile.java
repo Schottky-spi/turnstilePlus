@@ -1,10 +1,13 @@
 package de.schottky.turnstile;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Optional;
+import java.util.UUID;
 
 /**
  * Represents a structure in the world that acts as a
@@ -23,6 +26,14 @@ public interface Turnstile {
 
     void setOpen(boolean open);
 
+    @NotNull String name();
+
+    @NotNull UUID ownerUUID();
+
+    default @NotNull OfflinePlayer owningPlayer() {
+        return Bukkit.getOfflinePlayer(ownerUUID());
+    }
+
     enum Status {
         OPEN(true),
         CLOSED(false);
@@ -32,10 +43,5 @@ public interface Turnstile {
         Status(boolean isOpen) {
             this.isOpen = isOpen;
         }
-    }
-
-    static Optional<Turnstile> byName(String name) {
-        // TODO
-        return Optional.empty();
     }
 }

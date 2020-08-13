@@ -2,8 +2,8 @@ package de.schottky.turnstile.command;
 
 import de.schottky.turnstile.AbstractTurnstile;
 import de.schottky.turnstile.TurnstilePart;
+import de.schottky.turnstile.persistence.RequiredConstructor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -11,16 +11,14 @@ public class TestTurnstile extends AbstractTurnstile {
 
     private TurnstilePart onlyPart;
 
-    public TestTurnstile(TurnstilePart onlyPart) {
+    public TestTurnstile(String name, TurnstilePart onlyPart) {
+        super(name);
         this.onlyPart = onlyPart;
     }
 
+    @RequiredConstructor
     public TestTurnstile() {
-        this.onlyPart = null;
-    }
-
-    public void addPart(TurnstilePart onlyPart) {
-        this.onlyPart = onlyPart;
+        super(null);
     }
 
     @Override

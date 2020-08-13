@@ -28,11 +28,10 @@ public class TurnstileSetupCommand extends SubCommand {
             @NotNull String[] args)
     {
         final Block block = player.getTargetBlock(null, 20);
-        final TestTurnstile testTurnstile = new TestTurnstile();
         final BlockData data = Bukkit.createBlockData(Material.ACACIA_FENCE);
-        final TurnstilePart part = new SingleBlockTurnstilePart(testTurnstile, block, data);
-        testTurnstile.addPart(part);
-        TurnstileManager.registerTurnstile(testTurnstile);
+        final TurnstilePart part = new SingleBlockTurnstilePart(block, data);
+        final TestTurnstile testTurnstile = new TestTurnstile(args.length == 1 ? args[0] : "test", part);
+        TurnstileManager.registerTurnstile(player, testTurnstile);
         testTurnstile.setOpen(false);
         return true;
     }
