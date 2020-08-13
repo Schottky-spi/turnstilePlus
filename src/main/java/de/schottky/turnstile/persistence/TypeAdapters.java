@@ -12,8 +12,6 @@ import java.lang.reflect.Type;
 
 public class TypeAdapters {
 
-    interface JsonCoder<T> extends JsonSerializer<T>, JsonDeserializer<T> {}
-
     public static AppendingClassAdapter appendingClassAdapter = new AppendingClassAdapter();
 
     public static class AppendingClassAdapter implements JsonCoder<Object> {
@@ -36,7 +34,6 @@ public class TypeAdapters {
                 Type typeOfSrc,
                 JsonSerializationContext context)
         {
-            System.out.println("Serializing class: " + src.getClass());
             final JsonObject object = context.serialize(src, src.getClass()).getAsJsonObject();
             object.addProperty("class", src.getClass().getName());
             return object;

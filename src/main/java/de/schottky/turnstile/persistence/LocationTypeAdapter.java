@@ -7,7 +7,7 @@ import org.bukkit.Location;
 import java.lang.reflect.Type;
 import java.util.UUID;
 
-public class LocationTypeAdapter implements JsonSerializer<Location>, JsonDeserializer<Location> {
+public class LocationTypeAdapter implements JsonCoder<Location> {
 
     @Override
     public Location deserialize(
