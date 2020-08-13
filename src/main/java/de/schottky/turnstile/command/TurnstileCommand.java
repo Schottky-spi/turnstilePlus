@@ -17,7 +17,8 @@ public class TurnstileCommand extends CommandBase {
         this.registerSubCommands(
                 new TurnstileSetupCommand(this),
                 new TurnstileActivateCommand(this),
-                new List(this));
+                new List(this),
+                new Remove(this));
     }
 
     @Cmd(name = "list", maxArgs = 0, permission = "ts.command.list")
@@ -34,9 +35,24 @@ public class TurnstileCommand extends CommandBase {
                 @NotNull String label,
                 @NotNull String[] args)
         {
-            for (Turnstile turnstile: TurnstileManager.allTurnstilesForPlayer(player)) {
+            player.sendMessage("You have setup the following turnstiles:");
+            for (Turnstile turnstile: TurnstileManager.instance().allTurnstilesForPlayer(player)) {
                 player.sendMessage(turnstile.name());
             }
+            return true;
+        }
+    }
+
+    @Cmd(name = "remove", minArgs = 1, permission = "ts.command.remove")
+    static class Remove extends SubCommand {
+
+        public Remove(CommandBase parentCommand) {
+            super(parentCommand);
+        }
+
+        @Override
+        public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+            TurnstileManager.instance().removeTurnstile(args[0], player);
             return true;
         }
     }

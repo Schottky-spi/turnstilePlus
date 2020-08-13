@@ -53,7 +53,6 @@ public class TypeAdapters {
 
         @Override
         public void write(JsonWriter out, BlockData value) throws IOException {
-            System.out.println("Writing Block Data");
             out.value(value.getAsString());
         }
 

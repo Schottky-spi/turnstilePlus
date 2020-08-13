@@ -42,7 +42,7 @@ public final class TurnstilePersistence {
     }
 
     public static void saveAll() {
-        final Multimap<UUID,Turnstile> playerTurnstiles = TurnstileManager.retrieveTurnstileData();
+        final Multimap<UUID,Turnstile> playerTurnstiles = TurnstileManager.instance().retrieveTurnstileData();
         for (UUID uuid: playerTurnstiles.keySet()) {
             save(uuid, playerTurnstiles.get(uuid));
         }
@@ -77,7 +77,7 @@ public final class TurnstilePersistence {
                 Console.error(e);
             }
         }
-        TurnstileManager.loadTurnstileData(playerTurnstiles);
+        TurnstileManager.instance().loadTurnstileData(playerTurnstiles);
     }
 
     private static File getPlayerFile(UUID uuid) {

@@ -14,9 +14,13 @@ public class TurnstilePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         Zener.start(this);
-        final PluginManager pluginManager = Bukkit.getPluginManager();
-        pluginManager.registerEvents(new PlayerMoveListener(), this);
         Commands.registerAll(new TurnstileCommand());
+
+        final PluginManager pluginManager = Bukkit.getPluginManager();
+        final PlayerMoveListener listener = new PlayerMoveListener();
+        pluginManager.registerEvents(listener, this);
+
+        TurnstileManager.createInstance(listener);
         TurnstilePersistence.loadAll();
     }
 

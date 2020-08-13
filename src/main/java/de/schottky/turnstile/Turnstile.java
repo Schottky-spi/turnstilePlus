@@ -1,8 +1,8 @@
 package de.schottky.turnstile;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -19,19 +19,24 @@ public interface Turnstile {
     /**
      * called when this turnstile is open and a player enters the turnstile
      * @param player The player that enters the turnstile
-     * @param from The location that the player came from
-     * @param to The location that the player went
+     * @param direction The direction that the player entered the turnstile
      */
 
-    void onPlayerTraverse(Player player, Location from, Location to);
+    void onPlayerEnter(Player player, BlockFace direction);
+
+    /**
+     * called when this turnstile is open and a player leaves the turnstile
+     * @param player The player that left the turnstile
+     * @param direction The direction that the player left the turnstile
+     */
+    void onPlayerLeave(Player player, BlockFace direction);
 
     /**
      * called when a player requests the activation of a turnstile
      * @param player The player that requests the activation
-     * @return true, if the turnstile should open, false otherwise
      */
 
-    boolean requestActivation(Player player);
+    void requestActivation(Player player);
 
     /**
      * the current status of this turnstile, either open or closed

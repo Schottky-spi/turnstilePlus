@@ -1,15 +1,12 @@
 package de.schottky.turnstile;
 
+import de.schottky.turnstile.persistence.RequiredConstructor;
 import net.md_5.bungee.api.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Abstract Superclass for every regular turnstile.
@@ -26,6 +23,12 @@ public abstract class AbstractTurnstile implements Turnstile {
     private transient final Set<UUID> acceptedPlayers = new HashSet<>();
 
     /**
+     * players that are in the turnstile mapped to the BlockFace that they came from
+     */
+
+    private transient final Map<UUID,BlockFace> playersInTurnstile = new HashMap<>();
+
+    /**
      * The owner of the turnstile
      */
     private UUID owner;
@@ -35,12 +38,16 @@ public abstract class AbstractTurnstile implements Turnstile {
         return owner;
     }
 
+    public void setOwner(Player player) {
+        this.owner = player.getUniqueId();
+    }
+
     /**
      * The name of this turnstile, must be unique for every turnstile
      * of a player (can be the same if two
      */
 
-    private final String name;
+    private String name;
 
     @Override
     public @NotNull String name() {
@@ -52,37 +59,43 @@ public abstract class AbstractTurnstile implements Turnstile {
      * @param name The name
      */
 
-    public AbstractTurnstile(String name) {
+    public AbstractTurnstile(String name, Player owner) {
         this.name = name;
+        this.owner = owner.getUniqueId();
     }
 
-    public void setOwner(Player player) {
-        this.owner = player.getUniqueId();
-    }
+    @RequiredConstructor
+    protected AbstractTurnstile() { }
 
     @Override
-    public void onPlayerTraverse(Player player, Location from, Location to) {
-        if (!acceptedPlayers.remove(player.getUniqueId())) {
-            final Vector target = from.subtract(to).toVector().normalize().setY(0);
-            player.setVelocity(target.multiply(1.5));
+    public void onPlayerEnter(Player player, BlockFace direction) {
+        if (!acceptedPlayers.contains(player.getUniqueId())) {
+            player.setVelocity(direction.getDirection().multiply(-2));
+        } else {
+            this.playersInTurnstile.put(player.getUniqueId(), direction);
         }
-        this.setOpen(currentStatus().isOpen);
     }
 
     @Override
-    public boolean requestActivation(Player player) {
-        if (player.getUniqueId().equals(ownerUUID()))
-            return true;
-        // TODO: send messages
+    public void onPlayerLeave(Player player, BlockFace direction) {
+        final BlockFace entered = playersInTurnstile.remove(player.getUniqueId());
+        if (entered == null) {
+            player.setVelocity(direction.getDirection().multiply(-2));
+        } else if (entered != direction) {
+            this.acceptedPlayers.remove(player.getUniqueId());
+            this.setOpen(currentStatus().isOpen);
+            TurnstileManager.instance().postTurnstileUpdate(this);
+        }
+    }
+
+    @Override
+    public void requestActivation(Player player) {
         if (acceptedPlayers.contains(player.getUniqueId())) {
             player.sendMessage(ChatColor.RED + "You have already payed. Go through!");
-            return false;
         } else if (withdrawToll(player)) {
             acceptedPlayers.add(player.getUniqueId());
+            TurnstileManager.instance().postTurnstileUpdate(this);
             setOpen(true);
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -92,6 +105,8 @@ public abstract class AbstractTurnstile implements Turnstile {
     }
 
     protected boolean withdrawToll(Player player) {
+        if (player.getUniqueId().equals(ownerUUID()))
+            return true;
         // TODO: Toll, Vault e.t.c
         return true;
     }

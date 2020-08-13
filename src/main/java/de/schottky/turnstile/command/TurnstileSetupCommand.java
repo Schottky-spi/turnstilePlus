@@ -13,7 +13,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@Cmd(name = "setup", permission = "ts.command.setup", maxArgs = 0)
+@Cmd(name = "setup", permission = "ts.command.setup", minArgs = 1)
 public class TurnstileSetupCommand extends SubCommand {
 
     public TurnstileSetupCommand(CommandBase parentCommand) {
@@ -30,9 +30,14 @@ public class TurnstileSetupCommand extends SubCommand {
         final Block block = player.getTargetBlock(null, 20);
         final BlockData data = Bukkit.createBlockData(Material.ACACIA_FENCE);
         final TurnstilePart part = new SingleBlockTurnstilePart(block, data);
-        final TestTurnstile testTurnstile = new TestTurnstile(args.length == 1 ? args[0] : "test", part);
-        TurnstileManager.registerTurnstile(player, testTurnstile);
+        final TestTurnstile testTurnstile = new TestTurnstile(args[0], player, part);
+        TurnstileManager.instance().registerTurnstile(player, testTurnstile);
         testTurnstile.setOpen(false);
         return true;
+    }
+
+    @Override
+    public String tooFewArgumentsMessage(int missing) {
+        return "You must provide a name!";
     }
 }
