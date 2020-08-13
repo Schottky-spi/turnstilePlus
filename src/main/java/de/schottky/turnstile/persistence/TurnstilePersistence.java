@@ -53,7 +53,7 @@ public final class TurnstilePersistence {
     }
 
     public static void save(UUID uuid, Collection<Turnstile> turnstile) {
-        final File file = getUUIDFile(uuid);
+        final File file = getPlayerFile(uuid);
         final String json = gson.toJson(turnstile.toArray(new Turnstile[0]));
         try {
             final FileWriter writer = new FileWriter(file);
@@ -80,7 +80,7 @@ public final class TurnstilePersistence {
         TurnstileManager.loadTurnstileData(playerTurnstiles);
     }
 
-    private static File getUUIDFile(UUID uuid) {
+    private static File getPlayerFile(UUID uuid) {
         final File file = new File(dataFolder, uuid.toString() + ".json");
         if (!file.exists()) {
             try {
