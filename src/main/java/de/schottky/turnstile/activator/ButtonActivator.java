@@ -40,6 +40,11 @@ public class ButtonActivator extends AbstractActivator {
     }
 
     @Override
+    public boolean hasBeenRemoved() {
+        return !Tag.BUTTONS.isTagged(buttonLocation.getBlock().getType());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

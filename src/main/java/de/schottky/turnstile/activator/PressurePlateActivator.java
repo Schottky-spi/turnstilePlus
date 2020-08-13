@@ -3,9 +3,8 @@ package de.schottky.turnstile.activator;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstilePlugin;
 import de.schottky.turnstile.persistence.RequiredConstructor;
+import de.schottky.turnstile.tag.CustomTags;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.metadata.FixedMetadataValue;
 
@@ -16,7 +15,7 @@ public class PressurePlateActivator extends AbstractActivator {
     public static final String METADATA_IDENTIFIER = TurnstilePlugin.instance().getName() + ":plate_activator";
 
     public PressurePlateActivator(Block block) {
-        if (!isPressurePlate(block.getType())) {
+        if (!CustomTags.PRESSURE_PLATES.isTagged(block.getType())) {
             throw new RuntimeException("block not a pressure plate");
         }
         this.pressurePlateLocation = block.getLocation();
@@ -28,17 +27,16 @@ public class PressurePlateActivator extends AbstractActivator {
     @Override
     public void linkTurnstile(Turnstile turnstile) {
         final Block block = pressurePlateLocation.getBlock();
-        if (isPressurePlate(block.getType())) {
+        if (CustomTags.PRESSURE_PLATES.isTagged(block.getType())) {
             super.linkTurnstile(turnstile);
             block.setMetadata(METADATA_IDENTIFIER,
                     new FixedMetadataValue(TurnstilePlugin.instance(), this));
         }
     }
 
-    private boolean isPressurePlate(Material type) {
-        return Tag.WOODEN_PRESSURE_PLATES.isTagged(type) ||
-                type == Material.HEAVY_WEIGHTED_PRESSURE_PLATE ||
-                type == Material.LIGHT_WEIGHTED_PRESSURE_PLATE ||
-                type == Material.STONE_PRESSURE_PLATE;
+    @Override
+    public boolean hasBeenRemoved() {
+        return CustomTags.PRESSURE_PLATES.isTagged(pressurePlateLocation.getBlock().getType());
     }
+
 }

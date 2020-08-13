@@ -45,7 +45,14 @@ public abstract class AbstractTurnstile implements Turnstile {
     @Override
     public void initAfterLoad() {
         this.setOpen(false);
-        activators.forEach(activator -> activator.linkTurnstile(this));
+        final Iterator<TurnstileActivator> itr = activators.iterator();
+        while (itr.hasNext()) {
+            final TurnstileActivator activator = itr.next();
+            if (activator.hasBeenRemoved())
+                itr.remove();
+            else
+                activator.linkTurnstile(this);
+        }
     }
 
     /**

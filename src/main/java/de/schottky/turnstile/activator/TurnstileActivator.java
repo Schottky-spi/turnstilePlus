@@ -9,4 +9,6 @@ public interface TurnstileActivator {
 
     void linkTurnstile(Turnstile turnstile);
 
+    boolean hasBeenRemoved();
+
 }
