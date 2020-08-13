@@ -17,6 +17,7 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.Executors;
 
 public final class TurnstilePersistence {
 
@@ -45,6 +46,10 @@ public final class TurnstilePersistence {
         for (UUID uuid: playerTurnstiles.keySet()) {
             save(uuid, playerTurnstiles.get(uuid));
         }
+    }
+
+    public static void saveAsync(UUID uuid, Collection<Turnstile> turnstiles) {
+        Executors.newSingleThreadExecutor().submit(() -> save(uuid, turnstiles));
     }
 
     public static void save(UUID uuid, Collection<Turnstile> turnstile) {

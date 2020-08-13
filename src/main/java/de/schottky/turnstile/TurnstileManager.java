@@ -21,7 +21,7 @@ public class TurnstileManager {
 
     public static void registerTurnstile(Player player, Turnstile turnstile) {
         allTurnstiles.put(player.getUniqueId(), turnstile);
-        TurnstilePersistence.save(player.getUniqueId(), allTurnstiles.get(player.getUniqueId()));
+        TurnstilePersistence.saveAsync(player.getUniqueId(), allTurnstiles.get(player.getUniqueId()));
     }
 
     public static void loadTurnstileData(Multimap<UUID,Turnstile> turnstileData) {
