@@ -2,6 +2,7 @@ package de.schottky.turnstile.activator;
 
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.persistence.RequiredConstructor;
+import org.bukkit.entity.Player;
 
 import java.util.Objects;
 
@@ -15,7 +16,11 @@ public abstract class AbstractActivator implements TurnstileActivator {
     @Override
     public void linkTurnstile(Turnstile turnstile) {
         this.turnstile = turnstile;
-        turnstile.addActivator(this);
+    }
+
+    @Override
+    public void activateTurnstile(Player player) {
+        turnstile.requestActivation(player);
     }
 
     @Override

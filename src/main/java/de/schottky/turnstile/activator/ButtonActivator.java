@@ -29,15 +29,14 @@ public class ButtonActivator extends AbstractActivator {
     protected ButtonActivator() { }
 
     @Override
-    public void activateTurnstile(Player player) {
-        turnstile.requestActivation(player);
-    }
-
-    @Override
     public void linkTurnstile(Turnstile turnstile) {
-        super.linkTurnstile(turnstile);
-        buttonLocation.getBlock().setMetadata(METADATA_IDENTIFIER,
-                new FixedMetadataValue(TurnstilePlugin.instance(), this));
+        final Block block = buttonLocation.getBlock();
+        // If this is no longer a button, do not link
+        if (Tag.BUTTONS.isTagged(block.getType())) {
+            super.linkTurnstile(turnstile);
+            block.setMetadata(METADATA_IDENTIFIER,
+                    new FixedMetadataValue(TurnstilePlugin.instance(), this));
+        }
     }
 
     @Override

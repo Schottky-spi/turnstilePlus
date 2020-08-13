@@ -6,7 +6,8 @@ import com.github.schottky.zener.command.SubCommand;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileManager;
 import de.schottky.turnstile.activator.ButtonActivator;
-import org.bukkit.Bukkit;
+import de.schottky.turnstile.activator.PressurePlateActivator;
+import de.schottky.turnstile.tag.CustomTags;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
@@ -40,16 +41,22 @@ public class TurnstileLinkCommand extends SubCommand {
             player.sendMessage("Turnstile not present");
             return true;
         }
+        // Use a BlockIterator so that Buttons are not considered "too small" which can be the
+        // case for player#getTargetBlock(...)
         final BlockIterator blockIterator = new BlockIterator(player.getLocation(), 1.5, 5);
         while (blockIterator.hasNext()) {
             final Block block = blockIterator.next();
             if (Tag.BUTTONS.isTagged(block.getType())) {
-                new ButtonActivator(block).linkTurnstile(turnstile.get());
+                turnstile.get().addActivator(new ButtonActivator(block));
                 player.sendMessage("You have linked this button to turnstile " + turnstile.get().name());
+                return true;
+            } else if (CustomTags.PRESSURE_PLATES.isTagged(block.getType())) {
+                turnstile.get().addActivator(new PressurePlateActivator(block));
+                player.sendMessage("You have linked this pressure plate to turnstile " + turnstile.get().name());
                 return true;
             }
         }
-        player.sendMessage("You are not looking at a button!");
+        player.sendMessage("You are not looking at a linkable block!");
         return true;
     }
 
@@ -59,7 +66,12 @@ public class TurnstileLinkCommand extends SubCommand {
     }
 
     @Override
-    protected @Nullable List<String> tabCompleteOptionsFor(CommandSender sender, Command command, String label, String[] args) {
+    protected @Nullable List<String> tabCompleteOptionsFor(
+            CommandSender sender,
+            Command command,
+            String label,
+            String[] args)
+    {
         if (sender instanceof Player) {
             return TurnstileManager.instance()
                     .allTurnstilesForPlayer((Player) sender)

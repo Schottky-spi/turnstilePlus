@@ -38,6 +38,7 @@ public abstract class AbstractTurnstile implements Turnstile {
     @Override
     public void addActivator(TurnstileActivator activator) {
         this.activators.add(activator);
+        activator.linkTurnstile(this);
         TurnstilePersistence.saveAllAsyncFor(ownerUUID());
     }
 

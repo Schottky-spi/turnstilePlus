@@ -5,6 +5,7 @@ import com.github.schottky.zener.command.Commands;
 import de.schottky.turnstile.command.TurnstileCommand;
 import de.schottky.turnstile.event.ButtonClickListener;
 import de.schottky.turnstile.event.PlayerMoveListener;
+import de.schottky.turnstile.event.PressurePlateListener;
 import de.schottky.turnstile.persistence.TurnstilePersistence;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
@@ -21,6 +22,7 @@ public class TurnstilePlugin extends JavaPlugin {
         final PlayerMoveListener listener = new PlayerMoveListener();
         pluginManager.registerEvents(listener, this);
         pluginManager.registerEvents(new ButtonClickListener(), this);
+        pluginManager.registerEvents(new PressurePlateListener(), this);
 
         TurnstileManager.createInstance(listener);
         TurnstilePersistence.loadAll();

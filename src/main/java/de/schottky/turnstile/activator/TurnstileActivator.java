@@ -8,4 +8,5 @@ public interface TurnstileActivator {
     void activateTurnstile(Player player);
 
     void linkTurnstile(Turnstile turnstile);
+
 }
