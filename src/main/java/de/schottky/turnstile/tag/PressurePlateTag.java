@@ -7,7 +7,6 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.Tag;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collections;
 import java.util.Set;
 
 public class PressurePlateTag implements Tag<Material> {
@@ -30,7 +29,7 @@ public class PressurePlateTag implements Tag<Material> {
 
     @Override
     public @NotNull Set<Material> getValues() {
-        return Collections.unmodifiableSet(pressurePlates);
+        return pressurePlates;
     }
 
     @Override
