@@ -2,7 +2,6 @@ package de.schottky.turnstile;
 
 import com.google.gson.annotations.JsonAdapter;
 import de.schottky.turnstile.activator.TurnstileActivator;
-import de.schottky.turnstile.economy.EmptyPrice;
 import de.schottky.turnstile.economy.Price;
 import de.schottky.turnstile.persistence.RequiredConstructor;
 import de.schottky.turnstile.persistence.TurnstileActivatorSetAdapter;
@@ -84,11 +83,11 @@ public abstract class AbstractTurnstile implements Turnstile {
         return name;
     }
 
-    private @NotNull Price price = new EmptyPrice();
+    private @NotNull Price price = Price.emptyPrice();
 
     @Override
     public void setPrice(@Nullable Price price) {
-        this.price = price == null ? new EmptyPrice() : price;
+        this.price = price == null ? Price.emptyPrice() : price;
     }
 
     /**
