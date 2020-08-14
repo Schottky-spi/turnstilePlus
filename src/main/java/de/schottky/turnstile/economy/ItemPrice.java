@@ -1,0 +1,25 @@
+package de.schottky.turnstile.economy;
+
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+
+public class ItemPrice implements Price {
+
+    ItemStack stack;
+
+    public ItemPrice(ItemStack stack) {
+        this.stack = stack;
+    }
+
+    @Override
+    public boolean withdrawFromPlayer(Player player) {
+        final PlayerInventory inv = player.getInventory();
+        if (inv.containsAtLeast(stack, stack.getAmount())) {
+            inv.remove(stack);
+            return true;
+        } else {
+            return false;
+        }
+    }
+}

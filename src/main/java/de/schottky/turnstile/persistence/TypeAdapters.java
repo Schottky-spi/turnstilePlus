@@ -23,9 +23,13 @@ public class TypeAdapters {
                 JsonDeserializationContext context) throws JsonParseException
         {
             JsonObject object = json.getAsJsonObject();
-            final String clazzName = object.get("class").getAsString();
-            final Class<?> clazz = forName(clazzName);
-            return context.deserialize(object, clazz);
+            if (object.has("class")) {
+                final String clazzName = object.get("class").getAsString();
+                final Class<?> clazz = forName(clazzName);
+                return context.deserialize(object, clazz);
+            } else {
+                return null;
+            }
         }
 
         @Override
@@ -35,8 +39,12 @@ public class TypeAdapters {
                 JsonSerializationContext context)
         {
             final JsonObject object = context.serialize(src, src.getClass()).getAsJsonObject();
-            object.addProperty("class", src.getClass().getName());
-            return object;
+            if (object == null)
+                return null;
+            else {
+                object.addProperty("class", src.getClass().getName());
+                return object;
+            }
         }
     }
 

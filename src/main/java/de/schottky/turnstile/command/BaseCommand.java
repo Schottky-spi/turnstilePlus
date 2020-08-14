@@ -10,14 +10,15 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Cmd(name = "turnstile", maxArgs = 0)
-public class TurnstileCommand extends CommandBase {
+public class BaseCommand extends CommandBase {
 
-    public TurnstileCommand() {
+    public BaseCommand() {
         super();
         this.registerSubCommands(
-                new TurnstileSetupCommand(this),
-                new TurnstileActivateCommand(this),
-                new TurnstileLinkCommand(this),
+                new SetupCommand(this),
+                new ActivateCommand(this),
+                new LinkCommand(this),
+                new PriceCommand(this),
                 new List(this),
                 new Remove(this));
     }

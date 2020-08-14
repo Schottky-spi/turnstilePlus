@@ -2,7 +2,8 @@ package de.schottky.turnstile;
 
 import com.github.schottky.zener.api.Zener;
 import com.github.schottky.zener.command.Commands;
-import de.schottky.turnstile.command.TurnstileCommand;
+import de.schottky.turnstile.command.BaseCommand;
+import de.schottky.turnstile.economy.VaultHandler;
 import de.schottky.turnstile.event.ButtonClickListener;
 import de.schottky.turnstile.event.PlayerMoveListener;
 import de.schottky.turnstile.event.PressurePlateListener;
@@ -16,7 +17,7 @@ public class TurnstilePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         Zener.start(this);
-        Commands.registerAll(new TurnstileCommand());
+        Commands.registerAll(new BaseCommand());
 
         final PluginManager pluginManager = Bukkit.getPluginManager();
         final PlayerMoveListener listener = new PlayerMoveListener();
@@ -26,6 +27,7 @@ public class TurnstilePlugin extends JavaPlugin {
 
         TurnstileManager.createInstance(listener);
         TurnstilePersistence.loadAll();
+        VaultHandler.init();
     }
 
     @Override

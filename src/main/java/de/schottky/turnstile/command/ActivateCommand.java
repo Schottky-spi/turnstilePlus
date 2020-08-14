@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Cmd(name = "activate", permission = "ts.command.activate", minArgs = 1)
-public class TurnstileActivateCommand extends SubCommand {
+public class ActivateCommand extends SubCommand {
 
-    public TurnstileActivateCommand(CommandBase parentCommand) {
+    public ActivateCommand(CommandBase parentCommand) {
         super(parentCommand);
     }
 

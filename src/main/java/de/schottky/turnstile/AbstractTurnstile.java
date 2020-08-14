@@ -2,6 +2,8 @@ package de.schottky.turnstile;
 
 import com.google.gson.annotations.JsonAdapter;
 import de.schottky.turnstile.activator.TurnstileActivator;
+import de.schottky.turnstile.economy.EmptyPrice;
+import de.schottky.turnstile.economy.Price;
 import de.schottky.turnstile.persistence.RequiredConstructor;
 import de.schottky.turnstile.persistence.TurnstileActivatorSetAdapter;
 import de.schottky.turnstile.persistence.TurnstilePersistence;
@@ -9,6 +11,7 @@ import net.md_5.bungee.api.ChatColor;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -81,6 +84,13 @@ public abstract class AbstractTurnstile implements Turnstile {
         return name;
     }
 
+    private @NotNull Price price = new EmptyPrice();
+
+    @Override
+    public void setPrice(@Nullable Price price) {
+        this.price = price == null ? new EmptyPrice() : price;
+    }
+
     /**
      * instantiates a turnstile with a given name
      * @param name The name
@@ -123,6 +133,7 @@ public abstract class AbstractTurnstile implements Turnstile {
             acceptedPlayers.add(player.getUniqueId());
             TurnstileManager.instance().postTurnstileUpdate(this);
             setOpen(true);
+            player.sendMessage("here you go!");
         }
     }
 
@@ -132,10 +143,14 @@ public abstract class AbstractTurnstile implements Turnstile {
     }
 
     protected boolean withdrawToll(Player player) {
-        if (player.getUniqueId().equals(ownerUUID()))
+        //if (player.getUniqueId().equals(ownerUUID()))
+        //    return true;
+        if (price.withdrawFromPlayer(player)) {
             return true;
-        // TODO: Toll, Vault e.t.c
-        return true;
+        } else {
+            player.sendMessage("You do not have the required price at hand!");
+            return false;
+        }
     }
 
     @Override

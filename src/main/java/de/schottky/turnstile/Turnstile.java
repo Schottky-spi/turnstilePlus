@@ -1,6 +1,7 @@
 package de.schottky.turnstile;
 
 import de.schottky.turnstile.activator.TurnstileActivator;
+import de.schottky.turnstile.economy.Price;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockFace;
@@ -75,15 +76,6 @@ public interface Turnstile {
     @NotNull UUID ownerUUID();
 
     /**
-     * The offlinePlayer that this turnstile belongs to
-     * @return The player
-     */
-
-    default @NotNull OfflinePlayer owningPlayer() {
-        return Bukkit.getOfflinePlayer(ownerUUID());
-    }
-
-    /**
      * adds an activator that activates this turnstile (opens it)
      * @param activator The activator to add
      */
@@ -95,6 +87,13 @@ public interface Turnstile {
      * tasks with the data
      */
     void initAfterLoad();
+
+    /**
+     * set the price that is needed to pass through this turnstile
+     * @param price The price to set
+     */
+
+    void setPrice(Price price);
 
     enum Status {
         OPEN(true),

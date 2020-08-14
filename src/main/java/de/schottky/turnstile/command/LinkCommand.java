@@ -23,9 +23,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Cmd(name = "link", permission = "ts.command.link", minArgs = 1)
-public class TurnstileLinkCommand extends SubCommand {
+public class LinkCommand extends SubCommand {
 
-    public TurnstileLinkCommand(CommandBase parentCommand) {
+    public LinkCommand(CommandBase parentCommand) {
         super(parentCommand);
     }
 

@@ -10,6 +10,7 @@ import de.schottky.turnstile.TurnstileManager;
 import de.schottky.turnstile.TurnstilePart;
 import de.schottky.turnstile.TurnstilePlugin;
 import de.schottky.turnstile.activator.TurnstileActivator;
+import de.schottky.turnstile.economy.Price;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
@@ -37,6 +38,7 @@ public final class TurnstilePersistence {
                 .setPrettyPrinting()
                 .disableHtmlEscaping()
                 .registerTypeAdapter(Location.class, TypeAdapters.locationTypeAdapter)
+                .registerTypeAdapter(Price.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeAdapter(Turnstile.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeAdapter(TurnstilePart.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeAdapter(TurnstileActivator.class, TypeAdapters.appendingClassAdapter)

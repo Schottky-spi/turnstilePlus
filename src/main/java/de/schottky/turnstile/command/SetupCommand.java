@@ -14,9 +14,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Cmd(name = "setup", permission = "ts.command.setup", minArgs = 1)
-public class TurnstileSetupCommand extends SubCommand {
+public class SetupCommand extends SubCommand {
 
-    public TurnstileSetupCommand(CommandBase parentCommand) {
+    public SetupCommand(CommandBase parentCommand) {
         super(parentCommand);
     }
 
