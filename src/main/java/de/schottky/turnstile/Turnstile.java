@@ -1,6 +1,7 @@
 package de.schottky.turnstile;
 
 import de.schottky.turnstile.activator.TurnstileActivator;
+import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.Price;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -75,6 +76,10 @@ public interface Turnstile {
 
     @NotNull UUID ownerUUID();
 
+    default @NotNull OfflinePlayer owningPlayer() {
+        return Bukkit.getOfflinePlayer(ownerUUID());
+    }
+
     /**
      * adds an activator that activates this turnstile (opens it)
      * @param activator The activator to add
@@ -94,6 +99,17 @@ public interface Turnstile {
      */
 
     void setPrice(Price price);
+
+    /**
+     * returns the price that it costs to surpass this
+     * turnstile
+     * @return The price
+     */
+    Price price();
+
+    void addInformationDisplay(TurnstileInformationDisplay display);
+
+    void removeInformationDisplay(TurnstileInformationDisplay display);
 
     enum Status {
         OPEN(true),

@@ -55,6 +55,7 @@ public class LinkCommand extends SubCommand {
                 player.sendMessage("You have linked this pressure plate to turnstile " + turnstile.get().name());
                 return true;
             }
+            if (block.getType().isSolid()) { return true; }
         }
         player.sendMessage("You are not looking at a linkable block!");
         return true;

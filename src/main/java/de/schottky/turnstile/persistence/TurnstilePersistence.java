@@ -10,6 +10,7 @@ import de.schottky.turnstile.TurnstileManager;
 import de.schottky.turnstile.TurnstilePart;
 import de.schottky.turnstile.TurnstilePlugin;
 import de.schottky.turnstile.activator.TurnstileActivator;
+import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.Price;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
@@ -42,6 +43,7 @@ public final class TurnstilePersistence {
                 .registerTypeAdapter(Turnstile.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeAdapter(TurnstilePart.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeAdapter(TurnstileActivator.class, TypeAdapters.appendingClassAdapter)
+                .registerTypeAdapter(TurnstileInformationDisplay.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeHierarchyAdapter(BlockData.class, TypeAdapters.blockDataTypeAdapter)
                 .create();
     }

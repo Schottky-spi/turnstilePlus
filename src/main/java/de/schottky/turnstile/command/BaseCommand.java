@@ -20,7 +20,8 @@ public class BaseCommand extends CommandBase {
                 new LinkCommand(this),
                 new PriceCommand(this),
                 new List(this),
-                new Remove(this));
+                new Remove(this),
+                new LinkDisplayCommand(this));
     }
 
     @Cmd(name = "list", maxArgs = 0, permission = "ts.command.list")

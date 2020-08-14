@@ -2,6 +2,7 @@ package de.schottky.turnstile;
 
 import com.google.gson.annotations.JsonAdapter;
 import de.schottky.turnstile.activator.TurnstileActivator;
+import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.Price;
 import de.schottky.turnstile.persistence.RequiredConstructor;
 import de.schottky.turnstile.persistence.TurnstileActivatorSetAdapter;
@@ -37,6 +38,22 @@ public abstract class AbstractTurnstile implements Turnstile {
     @JsonAdapter(TurnstileActivatorSetAdapter.class)
     private final Set<TurnstileActivator> activators = new HashSet<>();
 
+    private final Set<TurnstileInformationDisplay> informationDisplays = new HashSet<>();
+
+    @Override
+    public void addInformationDisplay(TurnstileInformationDisplay display) {
+        this.informationDisplays.add(display);
+        postUpdate();
+    }
+
+    public void removeInformationDisplay(TurnstileInformationDisplay display) {
+        this.informationDisplays.remove(display);
+    }
+
+    private void postUpdate() {
+        informationDisplays.forEach(display -> display.displayInformationAbout(this));
+    }
+
     @Override
     public void addActivator(TurnstileActivator activator) {
         this.activators.add(activator);
@@ -55,6 +72,8 @@ public abstract class AbstractTurnstile implements Turnstile {
             else
                 activator.linkTurnstile(this);
         }
+        informationDisplays.removeIf(TurnstileInformationDisplay::hasBeenRemoved);
+        postUpdate();
     }
 
     /**
@@ -69,6 +88,7 @@ public abstract class AbstractTurnstile implements Turnstile {
 
     public void setOwner(Player player) {
         this.owner = player.getUniqueId();
+        postUpdate();
     }
 
     /**
@@ -88,6 +108,12 @@ public abstract class AbstractTurnstile implements Turnstile {
     @Override
     public void setPrice(@Nullable Price price) {
         this.price = price == null ? Price.emptyPrice() : price;
+        postUpdate();
+    }
+
+    @Override
+    public Price price() {
+        return price;
     }
 
     /**
@@ -142,8 +168,6 @@ public abstract class AbstractTurnstile implements Turnstile {
     }
 
     protected boolean withdrawToll(Player player) {
-        //if (player.getUniqueId().equals(ownerUUID()))
-        //    return true;
         if (price.withdrawFromPlayer(player)) {
             return true;
         } else {
