@@ -48,6 +48,17 @@ public interface Turnstile {
 
     Status currentStatus();
 
+    enum Status {
+        OPEN(true),
+        CLOSED(false);
+
+        public final boolean isOpen;
+
+        Status(boolean isOpen) {
+            this.isOpen = isOpen;
+        }
+    }
+
     /**
      * all parts of this turnstile that a player could move through
      * @return all parts that belong to this turnstile
@@ -110,15 +121,4 @@ public interface Turnstile {
     void addInformationDisplay(TurnstileInformationDisplay display);
 
     void removeInformationDisplay(TurnstileInformationDisplay display);
-
-    enum Status {
-        OPEN(true),
-        CLOSED(false);
-
-        public final boolean isOpen;
-
-        Status(boolean isOpen) {
-            this.isOpen = isOpen;
-        }
-    }
 }

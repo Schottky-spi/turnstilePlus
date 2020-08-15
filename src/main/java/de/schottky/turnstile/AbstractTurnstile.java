@@ -2,6 +2,7 @@ package de.schottky.turnstile;
 
 import com.google.gson.annotations.JsonAdapter;
 import de.schottky.turnstile.activator.TurnstileActivator;
+import de.schottky.turnstile.chrono.Countdown;
 import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.Price;
 import de.schottky.turnstile.persistence.RequiredConstructor;
@@ -14,6 +15,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Abstract Superclass for every regular turnstile.
@@ -22,21 +24,6 @@ import java.util.*;
  */
 
 public abstract class AbstractTurnstile implements Turnstile {
-
-    /**
-     * players that may traverse the turnstile
-     */
-
-    private transient final Set<UUID> acceptedPlayers = new HashSet<>();
-
-    /**
-     * players that are in the turnstile mapped to the BlockFace that they came from
-     */
-
-    private transient final Map<UUID,BlockFace> playersInTurnstile = new HashMap<>();
-
-    @JsonAdapter(TurnstileActivatorSetAdapter.class)
-    private final Set<TurnstileActivator> activators = new HashSet<>();
 
     private final Set<TurnstileInformationDisplay> informationDisplays = new HashSet<>();
 
@@ -54,6 +41,9 @@ public abstract class AbstractTurnstile implements Turnstile {
         informationDisplays.forEach(display -> display.displayInformationAbout(this));
     }
 
+    @JsonAdapter(TurnstileActivatorSetAdapter.class)
+    private final Set<TurnstileActivator> activators = new HashSet<>();
+
     @Override
     public void addActivator(TurnstileActivator activator) {
         this.activators.add(activator);
@@ -64,15 +54,9 @@ public abstract class AbstractTurnstile implements Turnstile {
     @Override
     public void initAfterLoad() {
         this.setOpen(false);
-        final Iterator<TurnstileActivator> itr = activators.iterator();
-        while (itr.hasNext()) {
-            final TurnstileActivator activator = itr.next();
-            if (activator.hasBeenRemoved())
-                itr.remove();
-            else
-                activator.linkTurnstile(this);
-        }
+        activators.removeIf(TurnstileActivator::hasBeenRemoved);
         informationDisplays.removeIf(TurnstileInformationDisplay::hasBeenRemoved);
+        activators.forEach(activator -> activator.linkTurnstile(this));
         postUpdate();
     }
 
@@ -129,6 +113,18 @@ public abstract class AbstractTurnstile implements Turnstile {
     @RequiredConstructor
     protected AbstractTurnstile() { }
 
+    /**
+     * players that may traverse the turnstile
+     */
+
+    private transient final Set<UUID> acceptedPlayers = new HashSet<>();
+
+    /**
+     * players that are in the turnstile mapped to the BlockFace that they came from
+     */
+
+    private transient final Map<UUID,BlockFace> playersInTurnstile = new HashMap<>();
+
     @Override
     public void onPlayerEnter(Player player, BlockFace direction) {
         if (!acceptedPlayers.contains(player.getUniqueId())) {
@@ -176,11 +172,17 @@ public abstract class AbstractTurnstile implements Turnstile {
         }
     }
 
+    private transient final Countdown guardian = new Countdown(10, TimeUnit.SECONDS, () -> setOpen(false));
+
     @Override
     public void setOpen(boolean open) {
         allParts().forEach(part -> part.setBlocking(!open));
-        if (!open)
+        if (!open) {
             acceptedPlayers.clear();
+            guardian.cancel();
+        } else {
+            guardian.reset();
+        }
     }
 
     @Override
