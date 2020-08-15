@@ -96,7 +96,9 @@ public interface Turnstile {
      * @param activator The activator to add
      */
 
-    void addActivator(TurnstileActivator activator);
+    void link(TurnstileActivator activator);
+
+    void unlink(TurnstileActivator activator);
 
     /**
      * called after the initial load has been performed to do additional

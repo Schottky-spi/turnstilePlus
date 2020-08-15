@@ -28,7 +28,7 @@ public class Countdown {
             case MILLISECONDS:
             default:
                 this.granularity = 1;
-                this.ticks = unit.toMillis(amount) / 50L;
+                this.ticks = unit.toSeconds(amount) * 20L;
                 break;
             case SECONDS:
                 this.granularity = 20;

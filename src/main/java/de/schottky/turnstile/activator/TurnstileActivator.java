@@ -1,13 +1,11 @@
 package de.schottky.turnstile.activator;
 
-import de.schottky.turnstile.Turnstile;
+import de.schottky.turnstile.Linkable;
 import org.bukkit.entity.Player;
 
-public interface TurnstileActivator {
+public interface TurnstileActivator extends Linkable {
 
     void activateTurnstile(Player player);
-
-    void linkTurnstile(Turnstile turnstile);
 
     boolean hasBeenRemoved();
 

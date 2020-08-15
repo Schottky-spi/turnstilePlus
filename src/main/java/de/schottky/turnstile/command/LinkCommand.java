@@ -47,15 +47,15 @@ public class LinkCommand extends SubCommand {
         while (blockIterator.hasNext()) {
             final Block block = blockIterator.next();
             if (Tag.BUTTONS.isTagged(block.getType())) {
-                turnstile.get().addActivator(new ButtonActivator(block));
+                turnstile.get().link(new ButtonActivator(block));
                 player.sendMessage("You have linked this button to turnstile " + turnstile.get().name());
                 return true;
             } else if (CustomTags.PRESSURE_PLATES.isTagged(block.getType())) {
-                turnstile.get().addActivator(new PressurePlateActivator(block));
+                turnstile.get().link(new PressurePlateActivator(block));
                 player.sendMessage("You have linked this pressure plate to turnstile " + turnstile.get().name());
                 return true;
             }
-            if (block.getType().isSolid()) { return true; }
+            if (block.getType().isSolid()) { break; }
         }
         player.sendMessage("You are not looking at a linkable block!");
         return true;

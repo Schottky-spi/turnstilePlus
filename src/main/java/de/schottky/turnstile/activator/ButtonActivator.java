@@ -2,11 +2,11 @@ package de.schottky.turnstile.activator;
 
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstilePlugin;
+import de.schottky.turnstile.metadata.MetadataKeys;
 import de.schottky.turnstile.persistence.RequiredConstructor;
 import org.bukkit.Location;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Player;
 import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Objects;
@@ -15,8 +15,7 @@ public class ButtonActivator extends AbstractActivator {
 
     private Location buttonLocation;
 
-    public static final String METADATA_IDENTIFIER =
-            TurnstilePlugin.instance().getName() + ":button_activator";
+    public static final String METADATA_IDENTIFIER = MetadataKeys.create("button_activator");
 
     public ButtonActivator(Block button) {
         if (!Tag.BUTTONS.isTagged(button.getType())) {
@@ -29,13 +28,16 @@ public class ButtonActivator extends AbstractActivator {
     protected ButtonActivator() { }
 
     @Override
-    public void linkTurnstile(Turnstile turnstile) {
+    public void link(Turnstile turnstile) {
+        super.link(turnstile);
         final Block block = buttonLocation.getBlock();
         // If this is no longer a button, do not link
         if (Tag.BUTTONS.isTagged(block.getType())) {
-            super.linkTurnstile(turnstile);
+            super.link(turnstile);
             block.setMetadata(METADATA_IDENTIFIER,
                     new FixedMetadataValue(TurnstilePlugin.instance(), this));
+        } else {
+            this.unlink();
         }
     }
 
@@ -50,11 +52,12 @@ public class ButtonActivator extends AbstractActivator {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ButtonActivator that = (ButtonActivator) o;
+        System.out.println(Objects.equals(buttonLocation, that.buttonLocation));
         return Objects.equals(buttonLocation, that.buttonLocation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), buttonLocation);
+        return Objects.hash(buttonLocation);
     }
 }

@@ -2,17 +2,20 @@ package de.schottky.turnstile.activator;
 
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstilePlugin;
+import de.schottky.turnstile.metadata.MetadataKeys;
 import de.schottky.turnstile.persistence.RequiredConstructor;
 import de.schottky.turnstile.tag.CustomTags;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.metadata.FixedMetadataValue;
 
+import java.util.Objects;
+
 public class PressurePlateActivator extends AbstractActivator {
 
     private Location pressurePlateLocation;
 
-    public static final String METADATA_IDENTIFIER = TurnstilePlugin.instance().getName() + ":plate_activator";
+    public static final String METADATA_IDENTIFIER = MetadataKeys.create("plate_activator");
 
     public PressurePlateActivator(Block block) {
         if (!CustomTags.PRESSURE_PLATES.isTagged(block.getType())) {
@@ -25,12 +28,15 @@ public class PressurePlateActivator extends AbstractActivator {
     public PressurePlateActivator() {}
 
     @Override
-    public void linkTurnstile(Turnstile turnstile) {
+    public void link(Turnstile turnstile) {
+        super.link(turnstile);
         final Block block = pressurePlateLocation.getBlock();
         if (CustomTags.PRESSURE_PLATES.isTagged(block.getType())) {
-            super.linkTurnstile(turnstile);
+            super.link(turnstile);
             block.setMetadata(METADATA_IDENTIFIER,
                     new FixedMetadataValue(TurnstilePlugin.instance(), this));
+        } else {
+            this.unlink();
         }
     }
 
@@ -39,4 +45,17 @@ public class PressurePlateActivator extends AbstractActivator {
         return CustomTags.PRESSURE_PLATES.isTagged(pressurePlateLocation.getBlock().getType());
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        PressurePlateActivator that = (PressurePlateActivator) o;
+        return Objects.equals(pressurePlateLocation, that.pressurePlateLocation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(pressurePlateLocation);
+    }
 }

@@ -1,12 +1,10 @@
 package de.schottky.turnstile;
 
-import com.google.gson.annotations.JsonAdapter;
 import de.schottky.turnstile.activator.TurnstileActivator;
 import de.schottky.turnstile.chrono.Countdown;
 import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.Price;
 import de.schottky.turnstile.persistence.RequiredConstructor;
-import de.schottky.turnstile.persistence.TurnstileActivatorSetAdapter;
 import de.schottky.turnstile.persistence.TurnstilePersistence;
 import net.md_5.bungee.api.ChatColor;
 import org.bukkit.block.BlockFace;
@@ -41,13 +39,20 @@ public abstract class AbstractTurnstile implements Turnstile {
         informationDisplays.forEach(display -> display.displayInformationAbout(this));
     }
 
-    @JsonAdapter(TurnstileActivatorSetAdapter.class)
+
     private final Set<TurnstileActivator> activators = new HashSet<>();
 
     @Override
-    public void addActivator(TurnstileActivator activator) {
+    public void link(TurnstileActivator activator) {
         this.activators.add(activator);
-        activator.linkTurnstile(this);
+        activator.link(this);
+        TurnstilePersistence.saveAllAsyncFor(ownerUUID());
+    }
+
+    @Override
+    public void unlink(TurnstileActivator activator) {
+        this.activators.remove(activator);
+        System.out.println(this.activators);
         TurnstilePersistence.saveAllAsyncFor(ownerUUID());
     }
 
@@ -56,7 +61,8 @@ public abstract class AbstractTurnstile implements Turnstile {
         this.setOpen(false);
         activators.removeIf(TurnstileActivator::hasBeenRemoved);
         informationDisplays.removeIf(TurnstileInformationDisplay::hasBeenRemoved);
-        activators.forEach(activator -> activator.linkTurnstile(this));
+        informationDisplays.forEach(informationDisplays -> informationDisplays.link(this));
+        activators.forEach(activator -> activator.link(this));
         postUpdate();
     }
 
