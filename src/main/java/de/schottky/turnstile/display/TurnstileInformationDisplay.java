@@ -7,6 +7,4 @@ public interface TurnstileInformationDisplay extends Linkable {
 
     void displayInformationAbout(Turnstile turnstile);
 
-    boolean hasBeenRemoved();
-
 }

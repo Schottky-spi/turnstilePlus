@@ -41,11 +41,6 @@ public class PressurePlateActivator extends AbstractActivator {
     }
 
     @Override
-    public boolean hasBeenRemoved() {
-        return CustomTags.PRESSURE_PLATES.isTagged(pressurePlateLocation.getBlock().getType());
-    }
-
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

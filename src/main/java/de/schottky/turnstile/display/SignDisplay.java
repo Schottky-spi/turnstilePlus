@@ -66,11 +66,6 @@ public class SignDisplay implements TurnstileInformationDisplay {
     }
 
     @Override
-    public boolean hasBeenRemoved() {
-        return getSign() != null;
-    }
-
-    @Override
     public void displayInformationAbout(Turnstile turnstile) {
         final Sign sign = getSign();
         if (sign == null) {

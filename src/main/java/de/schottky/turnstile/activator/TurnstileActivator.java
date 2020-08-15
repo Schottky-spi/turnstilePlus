@@ -7,6 +7,4 @@ public interface TurnstileActivator extends Linkable {
 
     void activateTurnstile(Player player);
 
-    boolean hasBeenRemoved();
-
 }

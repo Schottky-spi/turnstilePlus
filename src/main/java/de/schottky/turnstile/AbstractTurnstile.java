@@ -59,8 +59,6 @@ public abstract class AbstractTurnstile implements Turnstile {
     @Override
     public void initAfterLoad() {
         this.setOpen(false);
-        activators.removeIf(TurnstileActivator::hasBeenRemoved);
-        informationDisplays.removeIf(TurnstileInformationDisplay::hasBeenRemoved);
         informationDisplays.forEach(informationDisplays -> informationDisplays.link(this));
         activators.forEach(activator -> activator.link(this));
         postUpdate();
