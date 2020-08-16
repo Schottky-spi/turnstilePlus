@@ -27,6 +27,13 @@ public class BaseCommand extends CommandBase {
                 new UnlinkCommand(this));
     }
 
+    @Override
+    public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        player.sendMessage(":: TurnstilePlus ::");
+        subCommands.forEach(subCommands -> player.sendMessage("/turnstile " + subCommands.name()));
+        return true;
+    }
+
     @Cmd(name = "list", maxArgs = 0, permission = "ts.command.list")
     static class List extends SubCommand {
 
