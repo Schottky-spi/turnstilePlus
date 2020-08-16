@@ -13,7 +13,7 @@ public interface Price {
 
         @Override
         public boolean withdrawFromPlayer(Player player) {
-            return false;
+            return true;
         }
     }
 
