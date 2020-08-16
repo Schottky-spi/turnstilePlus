@@ -29,6 +29,7 @@ public class BaseCommand extends CommandBase {
 
     @Override
     public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        player.sendMessage(":: TurnstilePlus ::");
         subCommands.forEach(subCommands -> player.sendMessage(subCommands.name()));
         return true;
     }
