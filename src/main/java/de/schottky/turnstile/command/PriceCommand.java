@@ -18,19 +18,19 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 @Cmd(name = "setPrice", permission = "ts.command.setPrice")
-public class PriceCommand extends SubCommand {
+public class PriceCommand extends SubCommand<BaseCommand> {
 
-    private final SubCommand moneyCommand = new Money(this);
+    private final SubCommand<PriceCommand> moneyCommand = new Money(this);
 
-    public PriceCommand(CommandBase parentCommand) {
+    public PriceCommand(BaseCommand parentCommand) {
         super(parentCommand);
         this.registerSubCommands(moneyCommand, new Items(this));
     }
 
     @Cmd(name = "money", permission = "ts.command.setPrice.money", minArgs = 2)
-    static class Money extends SubCommand {
+    static class Money extends SubCommand<PriceCommand> {
 
-        public Money(CommandBase parentCommand) {
+        public Money(PriceCommand parentCommand) {
             super(parentCommand);
         }
 
@@ -58,9 +58,9 @@ public class PriceCommand extends SubCommand {
     }
 
     @Cmd(name = "item", permission = "ts.command.setPrice.item", minArgs = 1)
-    static class Items extends SubCommand {
+    static class Items extends SubCommand<PriceCommand> {
 
-        public Items(CommandBase parentCommand) {
+        public Items(PriceCommand parentCommand) {
             super(parentCommand);
         }
 

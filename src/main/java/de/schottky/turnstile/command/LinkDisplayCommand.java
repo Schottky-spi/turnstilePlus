@@ -1,7 +1,6 @@
 package de.schottky.turnstile.command;
 
 import com.github.schottky.zener.command.Cmd;
-import com.github.schottky.zener.command.CommandBase;
 import com.github.schottky.zener.command.SubCommand;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileManager;
@@ -16,9 +15,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Optional;
 
 @Cmd(name = "linkSign", permission = "ts.command.linkSign", minArgs = 1)
-public class LinkDisplayCommand extends SubCommand {
+public class LinkDisplayCommand extends SubCommand<BaseCommand> {
 
-    public LinkDisplayCommand(CommandBase parentCommand) {
+    public LinkDisplayCommand(BaseCommand parentCommand) {
         super(parentCommand);
     }
 

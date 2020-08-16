@@ -1,7 +1,6 @@
 package de.schottky.turnstile.command;
 
 import com.github.schottky.zener.command.Cmd;
-import com.github.schottky.zener.command.CommandBase;
 import com.github.schottky.zener.command.SubCommand;
 import de.schottky.turnstile.Linkable;
 import de.schottky.turnstile.Turnstile;
@@ -17,9 +16,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 @Cmd(name = "unlink", permission = "ts.command.unlink", maxArgs = 0)
-public class UnlinkCommand extends SubCommand {
+public class UnlinkCommand extends SubCommand<BaseCommand> {
 
-    public UnlinkCommand(CommandBase parentCommand) {
+    public UnlinkCommand(BaseCommand parentCommand) {
         super(parentCommand);
     }
 

@@ -2,7 +2,7 @@ package de.schottky.turnstile.command;
 
 import com.github.schottky.zener.command.Cmd;
 import com.github.schottky.zener.command.CommandBase;
-import com.github.schottky.zener.command.SubCommand;
+import com.github.schottky.zener.command.SubCmd;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileManager;
 import org.bukkit.command.Command;
@@ -18,11 +18,8 @@ public class BaseCommand extends CommandBase {
         super();
         this.registerSubCommands(
                 new SetupCommand(this),
-                new ActivateCommand(this),
                 new LinkCommand(this),
                 new PriceCommand(this),
-                new List(this),
-                new Remove(this),
                 new LinkDisplayCommand(this),
                 new UnlinkCommand(this));
     }
@@ -30,50 +27,32 @@ public class BaseCommand extends CommandBase {
     @Override
     public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         player.sendMessage(":: TurnstilePlus ::");
-        subCommands.forEach(subCommands -> player.sendMessage("/turnstile " + subCommands.name()));
+        subCommands.forEach(subCommands -> player.sendMessage("/turnstile " + subCommands.name() + " - " + subCommands.simpleDescription()));
         return true;
     }
 
-    @Cmd(name = "list", maxArgs = 0, permission = "ts.command.list")
-    static class List extends SubCommand {
+    @SubCmd(value = "list", desc = "Lists all turnstiles that you have")
+    public void listAll(Player player) {
+        Collection<Turnstile> turnstiles = TurnstileManager.instance().allTurnstilesForPlayer(player);
 
-        public List(CommandBase parentCommand) {
-            super(parentCommand);
-        }
-
-        @Override
-        public boolean onPlayerCommand(
-                @NotNull Player player,
-                @NotNull Command command,
-                @NotNull String label,
-                @NotNull String[] args)
-        {
-            Collection<Turnstile> turnstiles = TurnstileManager.instance().allTurnstilesForPlayer(player);
-
-            if (!turnstiles.isEmpty()) {
-                player.sendMessage("You have setup the following turnstiles:");
-                for (Turnstile turnstile : turnstiles) {
-                    player.sendMessage(turnstile.name());
-                }
-            } else {
-                player.sendMessage("You don't have any turnstiles.");
+        if (!turnstiles.isEmpty()) {
+            player.sendMessage("You have setup the following turnstiles:");
+            for (Turnstile turnstile : turnstiles) {
+                player.sendMessage(turnstile.name());
             }
-            return true;
+        } else {
+            player.sendMessage("You don't have any turnstiles.");
         }
     }
 
-    @Cmd(name = "remove", minArgs = 1, permission = "ts.command.remove")
-    static class Remove extends SubCommand {
+    @SubCmd(value = "remove", desc = "removes a turnstile")
+    public void removeTurnstile(Player player, String turnstile) {
+        TurnstileManager.instance().removeTurnstile(turnstile, player);
+    }
 
-        public Remove(CommandBase parentCommand) {
-            super(parentCommand);
-        }
-
-        @Override
-        public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-            TurnstileManager.instance().removeTurnstile(args[0], player);
-            return true;
-        }
+    @SubCmd("activate")
+    public void activateTurnstile(Player player, String turnstile) {
+        TurnstileManager.instance().activateTurnstile(turnstile, player);
     }
 
 }
