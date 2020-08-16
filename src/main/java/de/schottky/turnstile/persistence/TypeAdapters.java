@@ -26,7 +26,11 @@ public class TypeAdapters {
             if (object.has("class")) {
                 final String clazzName = object.get("class").getAsString();
                 final Class<?> clazz = forName(clazzName);
-                return context.deserialize(object, clazz);
+                if (clazz == null) {
+                    Console.warning("Null class found, skipping class " + clazzName);
+                    return null;
+                }else
+                    return context.deserialize(object, clazz);
             } else {
                 return null;
             }
@@ -53,7 +57,7 @@ public class TypeAdapters {
             return Class.forName(name);
         } catch (ClassNotFoundException e) {
             Console.error(e);
-            throw new RuntimeException();
+            return null;
         }
     }
 
