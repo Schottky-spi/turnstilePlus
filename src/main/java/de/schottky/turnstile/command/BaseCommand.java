@@ -9,6 +9,8 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Collection;
+
 @Cmd(name = "turnstile", maxArgs = 0)
 public class BaseCommand extends CommandBase {
 
@@ -39,9 +41,15 @@ public class BaseCommand extends CommandBase {
                 @NotNull String label,
                 @NotNull String[] args)
         {
-            player.sendMessage("You have setup the following turnstiles:");
-            for (Turnstile turnstile: TurnstileManager.instance().allTurnstilesForPlayer(player)) {
-                player.sendMessage(turnstile.name());
+            Collection<Turnstile> turnstiles = TurnstileManager.instance().allTurnstilesForPlayer(player);
+
+            if (!turnstiles.isEmpty()) {
+                player.sendMessage("You have setup the following turnstiles:");
+                for (Turnstile turnstile : turnstiles) {
+                    player.sendMessage(turnstile.name());
+                }
+            } else {
+                player.sendMessage("You don't have any turnstiles.");
             }
             return true;
         }
