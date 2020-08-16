@@ -6,7 +6,15 @@ import org.bukkit.entity.Player;
 public interface Price {
 
     static Price emptyPrice() {
-        return player -> true;
+        return new Empty();
+    }
+
+    class Empty implements Price {
+
+        @Override
+        public boolean withdrawFromPlayer(Player player) {
+            return false;
+        }
     }
 
     boolean withdrawFromPlayer(Player player);
