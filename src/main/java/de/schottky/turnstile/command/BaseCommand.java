@@ -6,6 +6,7 @@ import com.github.schottky.zener.command.SubCmd;
 import com.github.schottky.zener.command.SubCommand;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileManager;
+import de.schottky.turnstile.economy.ItemPrice;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -73,6 +74,11 @@ public class BaseCommand extends CommandBase {
     @SubCmd(value = "activate", desc = "activates the turnstile")
     public void activateTurnstile(Player player, String turnstile) {
         TurnstileManager.instance().activateTurnstile(turnstile, player);
+    }
+
+    @SubCmd(value = "collect", desc = "Collect all items from your turnstile")
+    public void collectPendingItems(Player player) {
+        ItemPrice.collectPendingItems(player);
     }
 
 }

@@ -1,14 +1,16 @@
 package de.schottky.turnstile.command;
 
-import com.github.schottky.zener.command.ArrayUtil;
 import com.github.schottky.zener.command.Cmd;
+import com.github.schottky.zener.command.SubCmd;
 import com.github.schottky.zener.command.SubCommand;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileManager;
 import de.schottky.turnstile.economy.EconomyPrice;
 import de.schottky.turnstile.economy.ItemPrice;
+import de.schottky.turnstile.economy.TicketPrice;
 import de.schottky.turnstile.economy.VaultHandler;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,61 +21,59 @@ import java.util.Optional;
 @Cmd(name = "setPrice", permission = "ts.command.setPrice")
 public class PriceCommand extends SubCommand<BaseCommand> {
 
-    private final SubCommand<PriceCommand> moneyCommand = new Money(this);
-
     public PriceCommand(BaseCommand parentCommand) {
         super(parentCommand);
-        this.registerSubCommands(moneyCommand, new Items(this));
     }
 
-    @Cmd(name = "money", permission = "ts.command.setPrice.money", minArgs = 2)
-    static class Money extends SubCommand<PriceCommand> {
-
-        public Money(PriceCommand parentCommand) {
-            super(parentCommand);
+    @SubCmd(value = "money", desc = "Set a new price")
+    public void setMoneyPrice(Player player, String turnstileName, int amount) {
+        final Optional<Turnstile> turnstile = TurnstileManager.instance().forName(turnstileName, player);
+        if (!turnstile.isPresent()) {
+            player.sendMessage("No turnstile by name " + turnstileName);
+        } else {
+            turnstile.get().setPrice(new EconomyPrice(amount));
+            player.sendMessage("Price " + VaultHandler.economy.format(amount) + " set for turnstile " + turnstileName);
         }
+    }
 
-        @Override
-        public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-            if (!VaultHandler.isEnabled()) {
-                player.sendMessage("Vault is not enabled; you cannot set a price!");
-            } else {
-                double price = 0;
-                try {
-                    price = Double.parseDouble(args[1]);
-                } catch (NumberFormatException e) {
-                    player.sendMessage("Not a number");
-                }
-                Optional<Turnstile> turnstile = TurnstileManager.instance().forName(args[0], player);
-                if (!turnstile.isPresent()) {
-                    player.sendMessage("No turnstile by name " + args[0]);
-                } else {
-                    turnstile.get().setPrice(new EconomyPrice(price));
-                    player.sendMessage("Price " + VaultHandler.economy.format(price) + " set for turnstile " + turnstile.get().name());
-                }
+    @SubCmd(value = "ticket", desc = "Set a new ticket-price")
+    public void setTicketPrice(Player player, String turnstileName, NamespacedKey item) {
+        final Optional<Turnstile> turnstile = TurnstileManager.instance().forName(turnstileName, player);
+        if (!turnstile.isPresent()) {
+            player.sendMessage("No turnstile by name " + turnstileName);
+        } else {
+            final Material type = Material.matchMaterial(item.getKey());
+            if (type == null) {
+                player.sendMessage("There is no material by the name " + item);
+                return;
             }
-            return true;
+            turnstile.get().setPrice(new TicketPrice(new ItemStack(type)));
+            player.sendMessage("Price " + type + " set for turnstile " + turnstileName);
         }
     }
 
-    @Cmd(name = "item", permission = "ts.command.setPrice.item", minArgs = 1)
-    static class Items extends SubCommand<PriceCommand> {
-
-        public Items(PriceCommand parentCommand) {
-            super(parentCommand);
-        }
-
-        @Override
-        public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-            final Material type = Material.matchMaterial(args[0]);
-            new ItemPrice(new ItemStack(type));
-            return true;
+    @SubCmd(value = "item", desc = "Set a new item-price")
+    public void setItemPrice(Player player, String turnstileName, NamespacedKey item) {
+        final Optional<Turnstile> turnstile = TurnstileManager.instance().forName(turnstileName, player);
+        if (!turnstile.isPresent()) {
+            player.sendMessage("No turnstile by name " + turnstileName);
+        } else {
+            final Material type = Material.matchMaterial(item.getKey());
+            if (type == null) {
+                player.sendMessage("There is no material by the name " + item);
+                return;
+            }
+            turnstile.get().setPrice(new ItemPrice(new ItemStack(type)));
+            player.sendMessage("Price " + type + " set for turnstile " + turnstileName);
         }
     }
 
     @Override
     public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        return moneyCommand.onPlayerCommand(player, command, label, ArrayUtil.popFirstN(args, 1));
+        for (SubCommand<?> command1: subCommands) {
+            player.sendMessage("/turnstile setPrice " + command1.name() + " - " + command1.simpleDescription());
+        }
+        return true;
     }
 
     @Override
