@@ -1,7 +1,6 @@
 package de.schottky.turnstile.display;
 
 import de.schottky.turnstile.Linkable;
-import de.schottky.turnstile.Turnstile;
 
 /**
  * Anything that wants to display information about a turnstile
