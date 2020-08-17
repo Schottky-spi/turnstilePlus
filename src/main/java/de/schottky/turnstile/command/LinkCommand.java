@@ -1,7 +1,6 @@
 package de.schottky.turnstile.command;
 
 import com.github.schottky.zener.command.Cmd;
-import com.github.schottky.zener.command.CommandBase;
 import com.github.schottky.zener.command.SubCommand;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileManager;
