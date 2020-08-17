@@ -1,7 +1,6 @@
 package de.schottky.turnstile.command;
 
 import com.github.schottky.zener.command.Cmd;
-import com.github.schottky.zener.command.CommandBase;
 import com.github.schottky.zener.command.SubCommand;
 import de.schottky.turnstile.DoorBlockTurnstilePart;
 import de.schottky.turnstile.Turnstile;
@@ -28,8 +27,7 @@ public class SetupCommand extends SubCommand<BaseCommand> {
             @NotNull Player player,
             @NotNull Command command,
             @NotNull String label,
-            @NotNull String[] args)
-    {
+            @NotNull String[] args) {
         final Block block = player.getTargetBlock(null, 20);
         if (Tag.DOORS.isTagged(block.getType())) {
             final TurnstilePart part = new DoorBlockTurnstilePart(block);
