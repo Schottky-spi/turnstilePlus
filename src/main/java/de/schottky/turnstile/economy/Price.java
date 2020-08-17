@@ -1,5 +1,6 @@
 package de.schottky.turnstile.economy;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 /**
@@ -19,7 +20,7 @@ public interface Price {
     class Empty implements Price {
 
         @Override
-        public boolean withdrawFromPlayer(Player player) {
+        public boolean withdrawFromPlayer(Player player, OfflinePlayer owner) {
             return true;
         }
     }
@@ -28,9 +29,10 @@ public interface Price {
      * withdraws the amount that it costs to pass through the
      * turnstile from the player
      * @param player The player to withdraw from
+     * @param owner The player that owns the turnstile and to whom the amount should go
      * @return true, if successful, false otherwise
      */
 
-    boolean withdrawFromPlayer(Player player);
+    boolean withdrawFromPlayer(Player player, OfflinePlayer owner);
 
 }

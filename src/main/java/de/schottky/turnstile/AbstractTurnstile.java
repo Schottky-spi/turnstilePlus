@@ -170,7 +170,7 @@ public abstract class AbstractTurnstile implements Turnstile {
     }
 
     protected boolean withdrawToll(Player player) {
-        if (price.withdrawFromPlayer(player)) {
+        if (price.withdrawFromPlayer(player, owningPlayer())) {
             return true;
         } else {
             player.sendMessage("You do not have the required price at hand!");
