@@ -6,6 +6,8 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.Locale;
+
 public class TicketPrice implements Price {
 
     protected ItemStack stack;
@@ -39,5 +41,11 @@ public class TicketPrice implements Price {
         } else {
             return false;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Ticket(" + stack.getType().name().replace('_', ' ').toLowerCase(Locale.ENGLISH)
+                + " x " + stack.getAmount() + ")";
     }
 }

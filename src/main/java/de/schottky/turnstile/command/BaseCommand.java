@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Cmd(name = "turnstile", maxArgs = 0)
 public class BaseCommand extends CommandBase {
@@ -79,6 +80,17 @@ public class BaseCommand extends CommandBase {
     @SubCmd(value = "collect", desc = "Collect all items from your turnstile")
     public void collectPendingItems(Player player) {
         ItemPrice.collectPendingItems(player);
+    }
+
+    @SubCmd(value = "info", desc = "displays information about the turnstile")
+    public void info(Player player, String turnstileName) {
+        final Optional<Turnstile> turnstile = TurnstileManager.instance().forName(turnstileName, player);
+        if (!turnstile.isPresent()) {
+            player.sendMessage("You do not have a turnstile by that name");
+        } else {
+            final Turnstile theTurnstile = turnstile.get();
+            player.sendMessage("Price: " + theTurnstile.price());
+        }
     }
 
 }

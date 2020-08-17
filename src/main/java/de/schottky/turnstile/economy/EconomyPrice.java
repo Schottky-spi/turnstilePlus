@@ -30,4 +30,9 @@ public class EconomyPrice implements Price {
         }
         return withdraw.transactionSuccess();
     }
+
+    @Override
+    public String toString() {
+        return VaultHandler.isEnabled() ? VaultHandler.economy.format(amount) : Double.toString(amount);
+    }
 }
