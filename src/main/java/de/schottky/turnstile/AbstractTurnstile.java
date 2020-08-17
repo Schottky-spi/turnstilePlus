@@ -31,6 +31,7 @@ public abstract class AbstractTurnstile implements Turnstile {
         postUpdate();
     }
 
+    @Override
     public void removeInformationDisplay(TurnstileInformationDisplay display) {
         this.informationDisplays.remove(display);
     }
@@ -38,7 +39,6 @@ public abstract class AbstractTurnstile implements Turnstile {
     private void postUpdate() {
         informationDisplays.forEach(display -> display.displayInformationAbout(this));
     }
-
 
     private final Set<TurnstileActivator> activators = new HashSet<>();
 
@@ -52,15 +52,17 @@ public abstract class AbstractTurnstile implements Turnstile {
     @Override
     public void unlink(TurnstileActivator activator) {
         this.activators.remove(activator);
-        System.out.println(this.activators);
         TurnstilePersistence.saveAllAsyncFor(ownerUUID());
     }
 
     @Override
     public void initAfterLoad() {
         this.setOpen(false);
+        // TODO: can cause ConcurrentModificationException when called within
+        // TODO: link
         informationDisplays.forEach(informationDisplays -> informationDisplays.link(this));
         activators.forEach(activator -> activator.link(this));
+        allParts().forEach(TurnstilePart::initAfterLoad);
         postUpdate();
     }
 
@@ -176,16 +178,16 @@ public abstract class AbstractTurnstile implements Turnstile {
         }
     }
 
-    private transient final Countdown guardian = new Countdown(10, TimeUnit.SECONDS, () -> setOpen(false));
+    private transient final Countdown countdown = new Countdown(10, TimeUnit.SECONDS, () -> setOpen(false));
 
     @Override
     public void setOpen(boolean open) {
         allParts().forEach(part -> part.setBlocking(!open));
         if (!open) {
             acceptedPlayers.clear();
-            guardian.cancel();
+            countdown.cancel();
         } else {
-            guardian.reset();
+            countdown.reset();
         }
     }
 

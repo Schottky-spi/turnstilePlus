@@ -17,9 +17,9 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 @Cmd(name = "setup", permission = "ts.command.setup", minArgs = 1)
-public class SetupCommand extends SubCommand {
+public class SetupCommand extends SubCommand<BaseCommand> {
 
-    public SetupCommand(CommandBase parentCommand) {
+    public SetupCommand(BaseCommand parentCommand) {
         super(parentCommand);
     }
 

@@ -5,6 +5,7 @@ import com.github.schottky.zener.command.Commands;
 import de.schottky.turnstile.command.BaseCommand;
 import de.schottky.turnstile.economy.VaultHandler;
 import de.schottky.turnstile.event.ButtonClickListener;
+import de.schottky.turnstile.event.DoorInteractListener;
 import de.schottky.turnstile.event.PlayerMoveListener;
 import de.schottky.turnstile.event.PressurePlateListener;
 import de.schottky.turnstile.persistence.TurnstilePersistence;
@@ -24,6 +25,7 @@ public class TurnstilePlugin extends JavaPlugin {
         pluginManager.registerEvents(listener, this);
         pluginManager.registerEvents(new ButtonClickListener(), this);
         pluginManager.registerEvents(new PressurePlateListener(), this);
+        pluginManager.registerEvents(doorInteractListener, this);
 
         TurnstileManager.createInstance(listener);
         TurnstilePersistence.loadAll();
@@ -34,6 +36,12 @@ public class TurnstilePlugin extends JavaPlugin {
     public void onDisable() {
         Zener.end();
         TurnstilePersistence.saveAll();
+    }
+
+    private final DoorInteractListener doorInteractListener = new DoorInteractListener();
+
+    public DoorInteractListener doorInteractListener() {
+        return doorInteractListener;
     }
 
     public static TurnstilePlugin instance() {

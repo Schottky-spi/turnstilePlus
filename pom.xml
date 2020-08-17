@@ -74,7 +74,6 @@
                 </excludes>
             </resource>
         </resources>
-
     </build>
 
     <repositories>
