@@ -12,7 +12,6 @@ public interface TurnstileInformationDisplay extends Linkable {
     /**
      * called when a major change in the turnstile happens and should
      * be used to update any visual dependencies like a sign
-     * @param turnstile The turnstile that had it's state changed
      */
     void onTurnstileStateUpdate();
 

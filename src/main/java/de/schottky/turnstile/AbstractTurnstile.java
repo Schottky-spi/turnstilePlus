@@ -28,6 +28,7 @@ public abstract class AbstractTurnstile implements Turnstile {
     @Override
     public void addInformationDisplay(TurnstileInformationDisplay display) {
         this.informationDisplays.add(display);
+        display.link(this);
         postUpdate();
     }
 

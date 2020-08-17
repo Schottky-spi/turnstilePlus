@@ -26,10 +26,10 @@ public class SignDisplay implements TurnstileInformationDisplay {
 
     public SignDisplay(Block sign) {
         this.signLocation = sign.getLocation();
-        Sign thisSign = getSign();
-        if (thisSign == null) {
+        if (!Tag.SIGNS.isTagged(sign.getType())) {
             throw new RuntimeException("Block is not a sign");
         }
+        final Sign thisSign = (Sign) sign.getState();
         this.formats = Arrays.copyOf(thisSign.getLines(), 4);
     }
 
@@ -55,13 +55,9 @@ public class SignDisplay implements TurnstileInformationDisplay {
     @Override
     public void link(Turnstile toTurnstile) {
         turnstile = new WeakReference<>(toTurnstile);
-        final Sign sign = this.getSign();
-        if (sign == null) {
-            this.unlink();
-        } else {
-            sign.setMetadata(METADATA_IDENTIFIER,
-                    new FixedMetadataValue(TurnstilePlugin.instance(), this));
-        }
+        final Block block = signLocation.getBlock();
+        block.setMetadata(METADATA_IDENTIFIER,
+                new FixedMetadataValue(TurnstilePlugin.instance(), this));
     }
 
     @Override
