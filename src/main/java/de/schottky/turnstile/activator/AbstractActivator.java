@@ -7,6 +7,13 @@ import org.bukkit.entity.Player;
 import java.lang.ref.WeakReference;
 import java.util.Objects;
 
+/**
+ * Abstract superclass for an activator. Contains basic implementations
+ * for {@link #link(Turnstile)} and {@link #unlink()} using a weak-reference
+ * to a turnstile. Also provides a basic implementation to activate
+ * the turnstile. Sub-classes may override all of these method, but should
+ * call the super-method.
+ */
 public abstract class AbstractActivator implements TurnstileActivator {
 
     protected transient WeakReference<Turnstile> turnstile = new WeakReference<>(null);

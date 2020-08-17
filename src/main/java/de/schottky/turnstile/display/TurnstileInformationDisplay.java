@@ -3,8 +3,18 @@ package de.schottky.turnstile.display;
 import de.schottky.turnstile.Linkable;
 import de.schottky.turnstile.Turnstile;
 
+/**
+ * Anything that wants to display information about a turnstile
+ * and receive updates whenever something major changes
+ * (the user of the turnstile, the name,...)
+ */
 public interface TurnstileInformationDisplay extends Linkable {
 
-    void displayInformationAbout(Turnstile turnstile);
+    /**
+     * called when a major change in the turnstile happens and should
+     * be used to update any visual dependencies like a sign
+     * @param turnstile The turnstile that had it's state changed
+     */
+    void onTurnstileStateUpdate();
 
 }

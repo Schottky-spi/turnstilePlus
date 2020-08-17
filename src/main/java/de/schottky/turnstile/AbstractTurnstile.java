@@ -37,7 +37,7 @@ public abstract class AbstractTurnstile implements Turnstile {
     }
 
     private void postUpdate() {
-        informationDisplays.forEach(display -> display.displayInformationAbout(this));
+        informationDisplays.forEach(TurnstileInformationDisplay::onTurnstileStateUpdate);
     }
 
     private final Set<TurnstileActivator> activators = new HashSet<>();

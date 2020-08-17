@@ -7,6 +7,9 @@ import org.bukkit.util.Vector;
 import java.util.EnumSet;
 import java.util.Set;
 
+/**
+ * utility-class to convert a vector to a block-face
+ */
 public class VectorToBlockFace {
 
     private static final Set<BlockFace> faces = EnumSet.of(
@@ -21,6 +24,13 @@ public class VectorToBlockFace {
         return ImmutableSet.copyOf(faces);
     }
 
+    /**
+     * converts the given vector to one of the following
+     * block-faces:
+     * <br>UP, DOWN, NORTH, SOUTH, EAST, WEST, SELF
+     * @param vector The vector to convert
+     * @return The block-face
+     */
     public static BlockFace convert(Vector vector) {
         BlockFace biggest = BlockFace.SELF;
         double highestCorrelation = 0;

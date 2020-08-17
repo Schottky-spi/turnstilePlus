@@ -13,11 +13,15 @@ import org.bukkit.metadata.FixedMetadataValue;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 
+/**
+ * A {@link TurnstileInformationDisplay} that is based on a sign
+ */
 public class SignDisplay implements TurnstileInformationDisplay {
 
     public static final String METADATA_IDENTIFIER = MetadataKeys.create("sign_display");
 
     private Location signLocation;
+    // what to display in the sign, can have a special meaning
     private final String[] formats;
 
     public SignDisplay(Block sign) {
@@ -34,15 +38,18 @@ public class SignDisplay implements TurnstileInformationDisplay {
         this.formats = new String[4];
     }
 
+    // returns the sign-state, or null if the sign
+    // no longer exists
     private Sign getSign() {
         final Block block = signLocation.getBlock();
-        if (!Tag.SIGNS.isTagged(block.getType())) {
+        if (!Tag.SIGNS.isTagged(block.getType()) || !block.hasMetadata(METADATA_IDENTIFIER)) {
             return null;
         } else {
             return (Sign) block.getState();
         }
     }
 
+    // weak reference to the turnstile that this belongs to
     private transient WeakReference<Turnstile> turnstile = new WeakReference<>(null);
 
     @Override
@@ -66,17 +73,20 @@ public class SignDisplay implements TurnstileInformationDisplay {
     }
 
     @Override
-    public void displayInformationAbout(Turnstile turnstile) {
+    public void onTurnstileStateUpdate() {
         final Sign sign = getSign();
         if (sign == null) {
             this.unlink();
             return;
         }
+        final Turnstile theTurnstile = turnstile.get();
+        if (theTurnstile == null) return;
+
         for (int i = 0; i < 4; i++) {
             String line = formats[i]
-                    .replace("[name]", turnstile.name())
-                    .replace("[price]", turnstile.price().toString());
-            final String name = turnstile.owningPlayer().getName();
+                    .replace("[name]", theTurnstile.name())
+                    .replace("[price]", theTurnstile.price().toString());
+            final String name = theTurnstile.owningPlayer().getName();
             line = line.replace("[owner]", name == null ? "No owner" : name);
             sign.setLine(i, line);
         }

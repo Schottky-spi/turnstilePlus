@@ -11,6 +11,9 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.util.Objects;
 
+/**
+ * An activator that is based upon any button
+ */
 public class ButtonActivator extends AbstractActivator {
 
     private Location buttonLocation;

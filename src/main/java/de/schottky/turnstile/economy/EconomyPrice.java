@@ -5,6 +5,10 @@ import de.schottky.turnstile.persistence.RequiredConstructor;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.entity.Player;
 
+/**
+ * withdraws a specific price from a player using
+ * vault's economy. Fails, if economy is not present/enabled
+ */
 public class EconomyPrice implements Price {
 
     private double amount;

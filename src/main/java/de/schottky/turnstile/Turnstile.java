@@ -32,6 +32,7 @@ public interface Turnstile {
      * @param player The player that left the turnstile
      * @param direction The direction that the player left the turnstile
      */
+
     void onPlayerLeave(Player player, BlockFace direction);
 
     /**

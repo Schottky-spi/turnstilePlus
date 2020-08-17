@@ -4,6 +4,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
+/**
+ * withdraws a certain amount of items from the player
+ */
 public class ItemPrice implements Price {
 
     ItemStack stack;
