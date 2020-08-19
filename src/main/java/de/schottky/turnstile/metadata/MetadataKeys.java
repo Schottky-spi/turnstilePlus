@@ -16,7 +16,7 @@ public class MetadataKeys {
         return finalKey;
     }
 
-    public static List<String> getAllKeys() {
+    public static List<String> allKeys() {
         return Collections.unmodifiableList(allKeys);
     }
 }

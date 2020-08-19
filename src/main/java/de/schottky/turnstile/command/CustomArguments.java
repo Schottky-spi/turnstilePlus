@@ -15,6 +15,7 @@ import de.schottky.turnstile.display.SignDisplay;
 import de.schottky.turnstile.economy.EconomyPrice;
 import de.schottky.turnstile.economy.ItemPrice;
 import de.schottky.turnstile.economy.TicketPrice;
+import de.schottky.turnstile.metadata.MetadataKeys;
 import de.schottky.turnstile.tag.CustomTags;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
@@ -100,15 +101,30 @@ public class CustomArguments {
             while (blockIterator.hasNext()) {
                 final Block block = blockIterator.next();
                 if (Tag.BUTTONS.isTagged(block.getType())) {
+                    check(block);
                     return new ButtonActivator(block);
                 } else if (CustomTags.PRESSURE_PLATES.isTagged(block.getType())) {
+                    check(block);
                     return new PressurePlateActivator(block);
                 } else if (Tag.SIGNS.isTagged(block.getType())) {
+                    check(block);
                     return new SignDisplay(block);
                 }
                 if (block.getType().isSolid()) { break; }
             }
-            throw ArgumentNotResolvable.withMessage("");
+            throw ArgumentNotResolvable.withMessage("This cannot be linked");
+        }
+
+        private void check(Block block) throws ArgumentNotResolvable {
+            for (String metadata: MetadataKeys.allKeys()) {
+                if (block.hasMetadata(metadata)) {
+                    final Object metadataValue = block.getMetadata(metadata).get(0).value();
+                    if (metadataValue instanceof Linkable) {
+                        throw ArgumentNotResolvable.withMessage("This is already linked to " +
+                                ((Linkable) metadataValue).linkedTurnstile().name());
+                    }
+                }
+            }
         }
     }
 }
