@@ -51,7 +51,7 @@ public class TicketPrice implements Price {
 
     @Override
     public String toString() {
-        return "Ticket(" + stack.getType().name().replace('_', ' ').toLowerCase(Locale.ENGLISH)
-                + " x " + stack.getAmount() + ")";
+        return stack.getType().name().replace('_', ' ').toLowerCase(Locale.ENGLISH)
+                + " x " + stack.getAmount();
     }
 }

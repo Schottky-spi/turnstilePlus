@@ -72,10 +72,4 @@ public class ItemPrice extends TicketPrice {
             }
         }
     }
-
-    @Override
-    public String toString() {
-        return "Item(" + stack.getType().name().replace('_', ' ').toLowerCase(Locale.ENGLISH)
-                + " x " + stack.getAmount() + ")";
-    }
 }
