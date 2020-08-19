@@ -1,12 +1,13 @@
 package de.schottky.turnstile;
 
-import de.schottky.turnstile.activator.TurnstileActivator;
 import de.schottky.turnstile.chrono.Countdown;
 import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.Price;
 import de.schottky.turnstile.persistence.RequiredConstructor;
 import de.schottky.turnstile.persistence.TurnstilePersistence;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,48 +24,55 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractTurnstile implements Turnstile {
 
-    private final Set<TurnstileInformationDisplay> informationDisplays = new HashSet<>();
+    private final Set<Linkable> linkables = new HashSet<>();
 
-    @Override
-    public void addInformationDisplay(TurnstileInformationDisplay display) {
-        this.informationDisplays.add(display);
-        display.link(this);
+    public void link(Linkable linkable) {
+        if (linkable.link(this)) {
+            this.linkables.add(linkable);
+            TurnstilePersistence.saveAllAsyncFor(ownerUUID());
+            player().ifPresent(p -> p.sendMessage("You have linked this " + linkable));
+        }
         postUpdate();
     }
 
-    @Override
-    public void removeInformationDisplay(TurnstileInformationDisplay display) {
-        this.informationDisplays.remove(display);
-    }
-
-    private void postUpdate() {
-        informationDisplays.forEach(TurnstileInformationDisplay::onTurnstileStateUpdate);
-    }
-
-    private final Set<TurnstileActivator> activators = new HashSet<>();
-
-    @Override
-    public void link(TurnstileActivator activator) {
-        this.activators.add(activator);
-        activator.link(this);
+    public void unlink(Linkable linkable) {
+        linkable.destroy();
         TurnstilePersistence.saveAllAsyncFor(ownerUUID());
     }
 
-    @Override
-    public void unlink(TurnstileActivator activator) {
-        this.activators.remove(activator);
+    public void destroy() {
+        linkables.forEach(Linkable::destroy);
+        linkables.clear();
+        postUpdate();
         TurnstilePersistence.saveAllAsyncFor(ownerUUID());
     }
 
     @Override
     public void initAfterLoad() {
-        this.setOpen(false);
-        // TODO: can cause ConcurrentModificationException when called within
-        // TODO: link
-        informationDisplays.forEach(informationDisplays -> informationDisplays.link(this));
-        activators.forEach(activator -> activator.link(this));
         allParts().forEach(TurnstilePart::initAfterLoad);
+        boolean changed = false;
+        final Iterator<Linkable> itr = linkables.iterator();
+        while (itr.hasNext()) {
+            final Linkable linkable = itr.next();
+            if (linkable == null) {
+                itr.remove();
+                changed = true;
+            } else if (!linkable.link(this)) {
+                itr.remove();
+                changed = true;
+            }
+        }
+        if (changed)
+            TurnstilePersistence.saveAllAsyncFor(ownerUUID());
+
+        this.setOpen(false);
         postUpdate();
+    }
+
+    private void postUpdate() {
+        linkables.stream().filter(linkable -> linkable instanceof TurnstileInformationDisplay)
+                .map(linkable -> (TurnstileInformationDisplay) linkable)
+                .forEach(TurnstileInformationDisplay::onTurnstileStateUpdate);
     }
 
     /**
@@ -77,8 +85,20 @@ public abstract class AbstractTurnstile implements Turnstile {
         return owner;
     }
 
-    public void setOwner(Player player) {
+    private Optional<Player> player() {
+        return Optional.ofNullable(owningPlayer().getPlayer());
+    }
+
+    public void setOwner(OfflinePlayer player) {
+        final Player previousOwner = Bukkit.getPlayer(ownerUUID());
+        if (previousOwner != null)
+            previousOwner.sendMessage("You are no longer the owner of turnstile " + name());
+
         this.owner = player.getUniqueId();
+        if (player.isOnline())
+            Objects.requireNonNull(player.getPlayer()).sendMessage(
+                    "You are now the owner of turnstile " + name());
+
         postUpdate();
     }
 

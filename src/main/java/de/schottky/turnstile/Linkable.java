@@ -2,7 +2,9 @@ package de.schottky.turnstile;
 
 public interface Linkable {
 
-    void link(Turnstile toTurnstile);
+    boolean link(Turnstile toTurnstile);
 
-    Turnstile unlink();
+    void destroy();
+
+    Turnstile linkedTurnstile();
 }

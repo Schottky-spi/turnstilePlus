@@ -31,17 +31,20 @@ public class ButtonActivator extends AbstractActivator {
     protected ButtonActivator() { }
 
     @Override
-    public void link(Turnstile turnstile) {
-        super.link(turnstile);
+    public void destroy() {
+        buttonLocation.getBlock().removeMetadata(METADATA_IDENTIFIER, TurnstilePlugin.instance());
+    }
+
+    @Override
+    public boolean link(Turnstile turnstile) {
         final Block block = buttonLocation.getBlock();
         // If this is no longer a button, do not link
         if (Tag.BUTTONS.isTagged(block.getType())) {
-            super.link(turnstile);
             block.setMetadata(METADATA_IDENTIFIER,
                     new FixedMetadataValue(TurnstilePlugin.instance(), this));
-        } else {
-            this.unlink();
+            return super.link(turnstile);
         }
+        return false;
     }
 
     @Override
@@ -52,6 +55,11 @@ public class ButtonActivator extends AbstractActivator {
         ButtonActivator that = (ButtonActivator) o;
         System.out.println(Objects.equals(buttonLocation, that.buttonLocation));
         return Objects.equals(buttonLocation, that.buttonLocation);
+    }
+
+    @Override
+    public String toString() {
+        return "button-activator";
     }
 
     @Override

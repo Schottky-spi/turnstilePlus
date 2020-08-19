@@ -1,6 +1,5 @@
-package de.schottky.turnstile.command;
+package de.schottky.turnstile;
 
-import de.schottky.turnstile.TurnstilePart;
 import de.schottky.turnstile.persistence.RequiredConstructor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

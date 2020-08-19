@@ -31,16 +31,19 @@ public class PressurePlateActivator extends AbstractActivator {
     public PressurePlateActivator() {}
 
     @Override
-    public void link(Turnstile turnstile) {
-        super.link(turnstile);
+    public boolean link(Turnstile turnstile) {
         final Block block = pressurePlateLocation.getBlock();
         if (CustomTags.PRESSURE_PLATES.isTagged(block.getType())) {
-            super.link(turnstile);
             block.setMetadata(METADATA_IDENTIFIER,
                     new FixedMetadataValue(TurnstilePlugin.instance(), this));
-        } else {
-            this.unlink();
+            return super.link(turnstile);
         }
+        return false;
+    }
+
+    @Override
+    public void destroy() {
+        pressurePlateLocation.getBlock().removeMetadata(METADATA_IDENTIFIER, TurnstilePlugin.instance());
     }
 
     @Override
@@ -50,6 +53,11 @@ public class PressurePlateActivator extends AbstractActivator {
         if (!super.equals(o)) return false;
         PressurePlateActivator that = (PressurePlateActivator) o;
         return Objects.equals(pressurePlateLocation, that.pressurePlateLocation);
+    }
+
+    @Override
+    public String toString() {
+        return "Pressure plate-activator";
     }
 
     @Override

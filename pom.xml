@@ -97,7 +97,7 @@
         <dependency>
             <groupId>com.github.Schottky-spi</groupId>
             <artifactId>zener-command</artifactId>
-            <version>v1.2-SNAPSHOT</version>
+            <version>v1.2.9.5-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

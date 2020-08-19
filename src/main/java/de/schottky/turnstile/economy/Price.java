@@ -2,6 +2,7 @@ package de.schottky.turnstile.economy;
 
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * The price that it costs to traverse through a turnstile
@@ -23,6 +24,11 @@ public interface Price {
         public boolean withdrawFromPlayer(Player player, OfflinePlayer owner) {
             return true;
         }
+
+        @Override
+        public @NotNull Type type() {
+            return Type.EMPTY;
+        }
     }
 
     /**
@@ -34,5 +40,14 @@ public interface Price {
      */
 
     boolean withdrawFromPlayer(Player player, OfflinePlayer owner);
+
+    @NotNull Type type();
+
+    enum Type {
+        ITEM,
+        TICKET,
+        MONEY,
+        EMPTY
+    }
 
 }

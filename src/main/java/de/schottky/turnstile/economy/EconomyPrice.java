@@ -5,6 +5,7 @@ import de.schottky.turnstile.persistence.RequiredConstructor;
 import net.milkbowl.vault.economy.EconomyResponse;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * withdraws a specific price from a player using
@@ -29,6 +30,11 @@ public class EconomyPrice implements Price {
             VaultHandler.economy.depositPlayer(owner, amount);
         }
         return withdraw.transactionSuccess();
+    }
+
+    @Override
+    public @NotNull Type type() {
+        return Type.MONEY;
     }
 
     @Override

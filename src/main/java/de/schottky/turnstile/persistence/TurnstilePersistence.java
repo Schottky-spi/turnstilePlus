@@ -7,10 +7,7 @@ import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import de.schottky.turnstile.Turnstile;
-import de.schottky.turnstile.TurnstileManager;
-import de.schottky.turnstile.TurnstilePart;
-import de.schottky.turnstile.TurnstilePlugin;
+import de.schottky.turnstile.*;
 import de.schottky.turnstile.activator.TurnstileActivator;
 import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.ItemPrice;
@@ -47,8 +44,7 @@ public final class TurnstilePersistence {
                 .registerTypeAdapter(Price.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeAdapter(Turnstile.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeAdapter(TurnstilePart.class, TypeAdapters.appendingClassAdapter)
-                .registerTypeAdapter(TurnstileActivator.class, TypeAdapters.appendingClassAdapter)
-                .registerTypeAdapter(TurnstileInformationDisplay.class, TypeAdapters.appendingClassAdapter)
+                .registerTypeAdapter(Linkable.class, TypeAdapters.appendingClassAdapter)
                 .registerTypeHierarchyAdapter(BlockData.class, TypeAdapters.blockDataTypeAdapter)
                 .registerTypeHierarchyAdapter(ConfigurationSerializable.class, new ConfigurationSerializableAdapter())
                 .create();

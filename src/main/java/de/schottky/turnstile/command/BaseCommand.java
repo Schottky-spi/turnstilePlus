@@ -1,9 +1,9 @@
 package de.schottky.turnstile.command;
 
-import com.github.schottky.zener.command.Cmd;
-import com.github.schottky.zener.command.CommandBase;
-import com.github.schottky.zener.command.SubCmd;
-import com.github.schottky.zener.command.SubCommand;
+import com.github.schottky.zener.command.*;
+import com.github.schottky.zener.command.resolver.SuccessMessage;
+import com.github.schottky.zener.command.resolver.Unresolved;
+import de.schottky.turnstile.Linkable;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileManager;
 import de.schottky.turnstile.economy.ItemPrice;
@@ -11,24 +11,21 @@ import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
-import java.util.Optional;
 
-@Cmd(name = "turnstile", maxArgs = 0)
+@Cmd(value = "turnstile", maxArgs = 0)
 public class BaseCommand extends CommandBase {
 
     public BaseCommand() {
         super();
         this.registerSubCommands(
                 new SetupCommand(this),
-                new LinkCommand(this),
-                new PriceCommand(this),
-                new LinkDisplayCommand(this),
-                new UnlinkCommand(this));
+                new PriceCommand(this));
     }
 
     @Override
@@ -54,43 +51,54 @@ public class BaseCommand extends CommandBase {
     }
 
     @SubCmd(value = "list", desc = "Lists all turnstiles that you have")
-    public void listAll(Player player) {
-        Collection<Turnstile> turnstiles = TurnstileManager.instance().allTurnstilesForPlayer(player);
+    public void listAll(@Unresolved Player sender) {
+        Collection<Turnstile> turnstiles = TurnstileManager.instance().allTurnstilesForPlayer(sender);
 
         if (!turnstiles.isEmpty()) {
-            player.sendMessage("You have setup the following turnstiles:");
+            sender.sendMessage("You have setup the following turnstiles:");
             for (Turnstile turnstile : turnstiles) {
-                player.sendMessage(turnstile.name());
+                sender.sendMessage(turnstile.name());
             }
         } else {
-            player.sendMessage("You don't have any turnstiles.");
+            sender.sendMessage("You don't have any turnstiles.");
         }
+    }
+
+    @SubCmd("setOwner")
+    public void setOwner(Turnstile turnstile, OfflinePlayer owner) {
+        turnstile.setOwner(owner);
     }
 
     @SubCmd(value = "remove", desc = "removes a turnstile")
-    public void removeTurnstile(Player player, String turnstile) {
-        TurnstileManager.instance().removeTurnstile(turnstile, player);
+    @SuccessMessage("Turnstile removed")
+    public void removeTurnstile(Turnstile turnstile) {
+        TurnstileManager.instance().removeTurnstile(turnstile);
     }
 
-    @SubCmd(value = "activate", desc = "activates the turnstile")
-    public void activateTurnstile(Player player, String turnstile) {
-        TurnstileManager.instance().activateTurnstile(turnstile, player);
+    @SubCmd(value = "activate", desc = "activates the turnstile for a player")
+    public void activateTurnstile(Turnstile turnstile, Player player) {
+        turnstile.requestActivation(player);
     }
 
     @SubCmd(value = "collect", desc = "Collect all items from your turnstile")
-    public void collectPendingItems(Player player) {
-        ItemPrice.collectPendingItems(player);
+    public void collectPendingItems(@Unresolved Player sender) {
+        ItemPrice.collectPendingItems(sender);
     }
 
     @SubCmd(value = "info", desc = "displays information about the turnstile")
-    public void info(Player player, String turnstileName) {
-        final Optional<Turnstile> turnstile = TurnstileManager.instance().forName(turnstileName, player);
-        if (!turnstile.isPresent()) {
-            player.sendMessage("You do not have a turnstile by that name");
-        } else {
-            final Turnstile theTurnstile = turnstile.get();
-            player.sendMessage("Price: " + theTurnstile.price());
-        }
+    @SuccessMessage("New price set!")
+    public void info(@Unresolved Player player, Turnstile turnstile) {
+        player.sendMessage("Price: " + turnstile.price());
+    }
+
+    @SubCmd(value = "link")
+    public void link(Turnstile turnstile, Linkable linkable) {
+        turnstile.link(linkable);
+    }
+
+    @SubCmd(value = "unlink")
+    public void unlink(Turnstile turnstile, Linkable linkable) {
+        turnstile.unlink(linkable);
     }
 
 }

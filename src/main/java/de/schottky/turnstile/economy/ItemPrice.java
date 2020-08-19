@@ -7,6 +7,7 @@ import de.schottky.turnstile.persistence.RequiredConstructor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 import java.util.Locale;
@@ -32,6 +33,11 @@ public class ItemPrice extends TicketPrice {
         if (stacks != null && !stacks.isEmpty()) {
             player.getInventory().addItem(stacks.toArray(new ItemStack[0]));
         }
+    }
+
+    @Override
+    public @NotNull Type type() {
+        return Type.ITEM;
     }
 
     public ItemPrice(ItemStack item) {

@@ -5,6 +5,7 @@ import de.schottky.turnstile.persistence.RequiredConstructor;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
@@ -19,6 +20,11 @@ public class TicketPrice implements Price {
     @RequiredConstructor
     public TicketPrice() {
 
+    }
+
+    @Override
+    public @NotNull Type type() {
+        return Type.TICKET;
     }
 
     @Override

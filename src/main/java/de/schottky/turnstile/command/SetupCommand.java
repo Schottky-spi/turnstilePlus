@@ -2,10 +2,7 @@ package de.schottky.turnstile.command;
 
 import com.github.schottky.zener.command.Cmd;
 import com.github.schottky.zener.command.SubCommand;
-import de.schottky.turnstile.DoorBlockTurnstilePart;
-import de.schottky.turnstile.Turnstile;
-import de.schottky.turnstile.TurnstileManager;
-import de.schottky.turnstile.TurnstilePart;
+import de.schottky.turnstile.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.Tag;
@@ -15,7 +12,7 @@ import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-@Cmd(name = "setup", permission = "ts.command.setup", minArgs = 1)
+@Cmd(value = "setup", permission = "ts.command.setup", minArgs = 1)
 public class SetupCommand extends SubCommand<BaseCommand> {
 
     public SetupCommand(BaseCommand parentCommand) {

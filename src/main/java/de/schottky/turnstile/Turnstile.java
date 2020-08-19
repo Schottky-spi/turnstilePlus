@@ -1,7 +1,5 @@
 package de.schottky.turnstile;
 
-import de.schottky.turnstile.activator.TurnstileActivator;
-import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.Price;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -92,20 +90,34 @@ public interface Turnstile {
         return Bukkit.getOfflinePlayer(ownerUUID());
     }
 
+    void setOwner(OfflinePlayer player);
+
     /**
-     * adds an activator that activates this turnstile (opens it)
-     * @param activator The activator to add
+     * adds a linkable item to this this turnstile.
+     * A linkable item can be an activator or an information-display
+     * @param linkable The item to add
      */
 
-    void link(TurnstileActivator activator);
+    void link(Linkable linkable);
 
-    void unlink(TurnstileActivator activator);
+    /**
+     * removes a linkable item from this turnstile
+     * @param linkable The linkable item to remove
+     */
+
+    void unlink(Linkable linkable);
 
     /**
      * called after the initial load has been performed to do additional
      * tasks with the data
      */
     void initAfterLoad();
+
+    /**
+     * destroys this turnstile
+     */
+
+    void destroy();
 
     /**
      * set the price that is needed to pass through this turnstile
@@ -120,8 +132,4 @@ public interface Turnstile {
      * @return The price
      */
     Price price();
-
-    void addInformationDisplay(TurnstileInformationDisplay display);
-
-    void removeInformationDisplay(TurnstileInformationDisplay display);
 }

@@ -53,26 +53,34 @@ public class SignDisplay implements TurnstileInformationDisplay {
     private transient WeakReference<Turnstile> turnstile = new WeakReference<>(null);
 
     @Override
-    public void link(Turnstile toTurnstile) {
-        turnstile = new WeakReference<>(toTurnstile);
+    public boolean link(Turnstile toTurnstile) {
         final Block block = signLocation.getBlock();
-        block.setMetadata(METADATA_IDENTIFIER,
-                new FixedMetadataValue(TurnstilePlugin.instance(), this));
+        if (Tag.SIGNS.isTagged(block.getType())) {
+            block.setMetadata(METADATA_IDENTIFIER,
+                    new FixedMetadataValue(TurnstilePlugin.instance(), this));
+            turnstile = new WeakReference<>(toTurnstile);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
-    public Turnstile unlink() {
-        final Turnstile theTurnstile = turnstile.get();
-        if (theTurnstile == null) return null;
-        theTurnstile.removeInformationDisplay(this);
-        return theTurnstile;
+    public Turnstile linkedTurnstile() {
+        return turnstile.get();
+    }
+
+    @Override
+    public void destroy() {
+        signLocation.getBlock().removeMetadata(METADATA_IDENTIFIER, TurnstilePlugin.instance());
     }
 
     @Override
     public void onTurnstileStateUpdate() {
         final Sign sign = getSign();
         if (sign == null) {
-            this.unlink();
+            if (this.linkedTurnstile() != null)
+                this.linkedTurnstile().unlink(this);
             return;
         }
         final Turnstile theTurnstile = turnstile.get();
@@ -87,5 +95,10 @@ public class SignDisplay implements TurnstileInformationDisplay {
             sign.setLine(i, line);
         }
         sign.update();
+    }
+
+    @Override
+    public String toString() {
+        return "Sign-display";
     }
 }

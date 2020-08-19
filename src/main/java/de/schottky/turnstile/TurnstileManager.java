@@ -90,16 +90,6 @@ public final class TurnstileManager {
     }
 
     /**
-     * Activate a certain turnstile
-     * @param t The turnstile to activate
-     * @param player the player to activate it for
-     */
-
-    public void activateTurnstile(Turnstile t, Player player) {
-        t.requestActivation(player);
-    }
-
-    /**
      * This should be the only method that distributes updates from the turnstile
      * to all listening nodes
      * @param turnstile The turnstile that wants to have its update posted
@@ -107,16 +97,6 @@ public final class TurnstileManager {
 
     public void postTurnstileUpdate(Turnstile turnstile) {
         listener.onTurnstileChange(turnstile);
-    }
-
-    public void activateTurnstile(String turnstileName, Player owner) {
-        final Optional<Turnstile> turnstile = forName(turnstileName, owner);
-        if (turnstile.isPresent()) {
-            activateTurnstile(turnstile.get(), owner);
-            owner.sendMessage("You have activated turnstile " + turnstileName);
-        } else {
-            owner.sendMessage("You do not own a turnstile by that name!");
-        }
     }
 
     public Optional<Turnstile> forName(String name, Player owner) {
@@ -131,6 +111,7 @@ public final class TurnstileManager {
     }
 
     public void removeTurnstile(Turnstile turnstile) {
+        turnstile.destroy();
         this.allTurnstiles.remove(turnstile);
     }
 

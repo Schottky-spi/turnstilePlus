@@ -3,6 +3,7 @@ package de.schottky.turnstile;
 import com.github.schottky.zener.api.Zener;
 import com.github.schottky.zener.command.Commands;
 import de.schottky.turnstile.command.BaseCommand;
+import de.schottky.turnstile.command.CustomArguments;
 import de.schottky.turnstile.economy.VaultHandler;
 import de.schottky.turnstile.event.ButtonClickListener;
 import de.schottky.turnstile.event.DoorInteractListener;
@@ -18,6 +19,7 @@ public class TurnstilePlugin extends JavaPlugin {
     @Override
     public void onEnable() {
         Zener.start(this);
+        CustomArguments.registerAll();
         Commands.registerAll(new BaseCommand());
 
         final PluginManager pluginManager = Bukkit.getPluginManager();
