@@ -63,6 +63,10 @@ public final class TurnstileManager {
     public void registerTurnstile(Player player, Turnstile turnstile) {
         allTurnstiles.add(turnstile);
         TurnstilePersistence.saveAsync(player.getUniqueId(), allTurnstilesForPlayer(player));
+        turnstile.setOpen(false);
+        player.sendMessage("You have setup a new turnstile");
+        player.sendMessage("Use /ts setPrice to set a price");
+        player.sendMessage("And /ts link to link activators/signs");
     }
 
     /**

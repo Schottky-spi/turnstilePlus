@@ -17,6 +17,10 @@ public class SingleBlockTurnstilePart implements TurnstilePart {
         this.data = blockData;
     }
 
+    public SingleBlockTurnstilePart(Block block) {
+        this(block, block.getBlockData());
+    }
+
     @RequiredConstructor
     private SingleBlockTurnstilePart() {}
 

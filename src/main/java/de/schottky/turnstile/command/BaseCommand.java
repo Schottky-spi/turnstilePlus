@@ -1,17 +1,20 @@
 package de.schottky.turnstile.command;
 
-import com.github.schottky.zener.command.*;
-import com.github.schottky.zener.command.resolver.SuccessMessage;
+import com.github.schottky.zener.command.Cmd;
+import com.github.schottky.zener.command.CommandBase;
+import com.github.schottky.zener.command.SubCmd;
+import com.github.schottky.zener.command.SubCommand;
+import com.github.schottky.zener.command.resolver.CommandException;
 import com.github.schottky.zener.command.resolver.Unresolved;
-import de.schottky.turnstile.Linkable;
-import de.schottky.turnstile.Turnstile;
-import de.schottky.turnstile.TurnstileManager;
+import de.schottky.turnstile.*;
 import de.schottky.turnstile.economy.ItemPrice;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.ClickEvent;
 import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.Tag;
+import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -23,9 +26,7 @@ public class BaseCommand extends CommandBase {
 
     public BaseCommand() {
         super();
-        this.registerSubCommands(
-                new SetupCommand(this),
-                new PriceCommand(this));
+        this.registerSubCommands(new PriceCommand(this));
     }
 
     @Override
@@ -62,6 +63,20 @@ public class BaseCommand extends CommandBase {
         } else {
             sender.sendMessage("You don't have any turnstiles.");
         }
+    }
+
+    @SubCmd("setup")
+    public void setupTurnstile(Block block, String turnstileName, @Unresolved Player sender) throws CommandException {
+        TurnstilePart part;
+        if (Tag.DOORS.isTagged(block.getType())) {
+            part = new DoorBlockTurnstilePart(block);
+        } else if (Tag.FENCES.isTagged(block.getType())) {
+            part = new SingleBlockTurnstilePart(block);
+        } else {
+            throw new CommandException("You are not looking at a turnstile-block");
+        }
+        final Turnstile turnstile = new SimpleTurnstile(turnstileName, sender, part);
+        TurnstileManager.instance().registerTurnstile(sender, turnstile);
     }
 
 

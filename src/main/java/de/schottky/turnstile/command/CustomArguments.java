@@ -33,18 +33,19 @@ public class CustomArguments {
         ArgumentResolver.registerArgument(ItemPrice.class, ItemPriceArgument::new);
         ArgumentResolver.registerArgument(TicketPrice.class, TicketArgument::new);
         ArgumentResolver.registerArgument(Linkable.class, LinkableArgument::new);
+        ArgumentResolver.registerArgument(Block.class, BlockArgument::new);
     }
 
     public static class TurnstileArgument extends AbstractLowLevelArg<Turnstile> {
 
         @Override
-        protected Turnstile fromArgument(String arg, CommandContext context) throws ArgumentNotResolvable {
+        protected Turnstile fromArgument(String arg, CommandContext context) throws CommandException {
             return TurnstileManager.instance().forName(arg, context.getPlayer())
                     .orElseThrow(() -> ArgumentNotResolvable.withMessage("You do not own a turnstile by that name"));
         }
 
         @Override
-        public Stream<Turnstile> options(CommandContext context) {
+        public Stream<Turnstile> options(CommandContext context) throws CommandException {
             return TurnstileManager
                     .instance()
                     .allTurnstilesForPlayer(context.getPlayer())
@@ -95,7 +96,7 @@ public class CustomArguments {
     public static class LinkableArgument extends AbstractContextualArgument<Linkable> {
 
         @Override
-        public Linkable fromContext(CommandContext context) throws ArgumentNotResolvable {
+        public Linkable fromContext(CommandContext context) throws CommandException {
             final Player player = context.getPlayer();
             final BlockIterator blockIterator = new BlockIterator(player.getLocation(), 1.5, 5);
             while (blockIterator.hasNext()) {
@@ -125,6 +126,18 @@ public class CustomArguments {
                     }
                 }
             }
+        }
+
+    }
+
+    public static class BlockArgument extends AbstractContextualArgument<Block> {
+
+        @Override
+        public Block fromContext(CommandContext context) throws CommandException {
+            final Block block = context.getPlayer().getTargetBlock(null, 20);
+            if (block.getType().isAir())
+                throw ArgumentNotResolvable.withMessage("You are not looking at a block!");
+            return block;
         }
     }
 }
