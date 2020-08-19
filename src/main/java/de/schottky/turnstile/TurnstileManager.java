@@ -113,6 +113,7 @@ public final class TurnstileManager {
     public void removeTurnstile(Turnstile turnstile) {
         turnstile.destroy();
         this.allTurnstiles.remove(turnstile);
+        TurnstilePersistence.saveAllAsyncFor(turnstile.ownerUUID());
     }
 
 }

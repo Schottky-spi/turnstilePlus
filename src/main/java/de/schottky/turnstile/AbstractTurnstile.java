@@ -44,7 +44,6 @@ public abstract class AbstractTurnstile implements Turnstile {
         linkables.forEach(Linkable::destroy);
         linkables.clear();
         player().ifPresent(player -> player.sendMessage("removed turnstile " + name()));
-        TurnstilePersistence.saveAllAsyncFor(ownerUUID());
     }
 
     @Override
