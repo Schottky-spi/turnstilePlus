@@ -2,6 +2,10 @@ package de.schottky.turnstile.command;
 
 import com.github.schottky.zener.command.CommandContext;
 import com.github.schottky.zener.command.resolver.*;
+import com.github.schottky.zener.command.resolver.argument.AbstractContextualArgument;
+import com.github.schottky.zener.command.resolver.argument.AbstractHighLevelArg;
+import com.github.schottky.zener.command.resolver.argument.AbstractLowLevelArg;
+import com.github.schottky.zener.command.resolver.argument.Arguments;
 import de.schottky.turnstile.Linkable;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileManager;
@@ -17,6 +21,8 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
+
+import java.util.stream.Stream;
 
 public class CustomArguments {
 
@@ -34,6 +40,19 @@ public class CustomArguments {
         protected Turnstile fromArgument(String arg, CommandContext context) throws ArgumentNotResolvable {
             return TurnstileManager.instance().forName(arg, context.getPlayer())
                     .orElseThrow(() -> ArgumentNotResolvable.withMessage("You do not own a turnstile by that name"));
+        }
+
+        @Override
+        public Stream<Turnstile> options(CommandContext context) {
+            return TurnstileManager
+                    .instance()
+                    .allTurnstilesForPlayer(context.getPlayer())
+                    .stream();
+        }
+
+        @Override
+        public String toString(Turnstile value) {
+            return value.name();
         }
     }
 

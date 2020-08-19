@@ -64,37 +64,42 @@ public class BaseCommand extends CommandBase {
         }
     }
 
+
     @SubCmd("setOwner")
     public void setOwner(Turnstile turnstile, OfflinePlayer owner) {
         turnstile.setOwner(owner);
     }
 
+
     @SubCmd(value = "remove", desc = "removes a turnstile")
-    @SuccessMessage("Turnstile removed")
     public void removeTurnstile(Turnstile turnstile) {
         TurnstileManager.instance().removeTurnstile(turnstile);
     }
+
 
     @SubCmd(value = "activate", desc = "activates the turnstile for a player")
     public void activateTurnstile(Turnstile turnstile, Player player) {
         turnstile.requestActivation(player);
     }
 
+
     @SubCmd(value = "collect", desc = "Collect all items from your turnstile")
     public void collectPendingItems(@Unresolved Player sender) {
         ItemPrice.collectPendingItems(sender);
     }
 
+
     @SubCmd(value = "info", desc = "displays information about the turnstile")
-    @SuccessMessage("New price set!")
     public void info(@Unresolved Player player, Turnstile turnstile) {
         player.sendMessage("Price: " + turnstile.price());
     }
+
 
     @SubCmd(value = "link")
     public void link(Turnstile turnstile, Linkable linkable) {
         turnstile.link(linkable);
     }
+
 
     @SubCmd(value = "unlink")
     public void unlink(Turnstile turnstile, Linkable linkable) {

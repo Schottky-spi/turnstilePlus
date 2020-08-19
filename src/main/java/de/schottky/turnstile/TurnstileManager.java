@@ -115,14 +115,4 @@ public final class TurnstileManager {
         this.allTurnstiles.remove(turnstile);
     }
 
-    public void removeTurnstile(String name, Player owner) {
-        final Optional<Turnstile> turnstile = forName(name, owner);
-        if (turnstile.isPresent()) {
-            removeTurnstile(turnstile.get());
-            owner.sendMessage("Successfully removed Turnstile " + name);
-        } else {
-            owner.sendMessage("You do not own a turnstile by that name!");
-        }
-    }
-
 }

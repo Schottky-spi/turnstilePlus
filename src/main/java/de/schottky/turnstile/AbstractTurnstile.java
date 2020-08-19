@@ -43,7 +43,7 @@ public abstract class AbstractTurnstile implements Turnstile {
     public void destroy() {
         linkables.forEach(Linkable::destroy);
         linkables.clear();
-        postUpdate();
+        player().ifPresent(player -> player.sendMessage("removed turnstile " + name()));
         TurnstilePersistence.saveAllAsyncFor(ownerUUID());
     }
 
