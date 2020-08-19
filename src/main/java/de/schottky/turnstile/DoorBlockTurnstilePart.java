@@ -57,4 +57,9 @@ public class DoorBlockTurnstilePart implements TurnstilePart {
     public void initAfterLoad() {
         TurnstilePlugin.instance().doorInteractListener().addObservedLocation(lowerBlock);
     }
+
+    @Override
+    public void destroy() {
+        TurnstilePlugin.instance().doorInteractListener().removeObservedLocation(lowerBlock);
+    }
 }

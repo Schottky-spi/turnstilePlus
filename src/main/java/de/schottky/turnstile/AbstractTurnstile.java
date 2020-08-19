@@ -30,7 +30,7 @@ public abstract class AbstractTurnstile implements Turnstile {
         if (linkable.link(this)) {
             this.linkables.add(linkable);
             TurnstilePersistence.saveAllAsyncFor(ownerUUID());
-            player().ifPresent(p -> p.sendMessage("You have linked this " + linkable));
+            owningOnlinePlayer().ifPresent(p -> p.sendMessage("You have linked this " + linkable));
         }
         postUpdate();
     }
@@ -43,7 +43,8 @@ public abstract class AbstractTurnstile implements Turnstile {
     public void destroy() {
         linkables.forEach(Linkable::destroy);
         linkables.clear();
-        player().ifPresent(player -> player.sendMessage("removed turnstile " + name()));
+        allParts().forEach(TurnstilePart::destroy);
+        owningOnlinePlayer().ifPresent(player -> player.sendMessage("removed turnstile " + name()));
     }
 
     @Override
@@ -84,7 +85,7 @@ public abstract class AbstractTurnstile implements Turnstile {
         return owner;
     }
 
-    private Optional<Player> player() {
+    private Optional<Player> owningOnlinePlayer() {
         return Optional.ofNullable(owningPlayer().getPlayer());
     }
 

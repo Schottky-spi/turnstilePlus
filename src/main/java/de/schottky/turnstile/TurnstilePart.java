@@ -22,5 +22,7 @@ public interface TurnstilePart {
 
     void setBlocking(boolean block);
 
-    default void initAfterLoad() {}
+    void initAfterLoad();
+
+    void destroy();
 }

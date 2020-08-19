@@ -33,4 +33,10 @@ public class SingleBlockTurnstilePart implements TurnstilePart {
                 data :
                 Bukkit.createBlockData(Material.AIR));
     }
+
+    @Override
+    public void initAfterLoad() { }
+
+    @Override
+    public void destroy() { }
 }
