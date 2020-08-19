@@ -24,6 +24,9 @@ public class TestTurnstile extends AbstractTurnstile {
 
     @Override
     public Collection<TurnstilePart> allParts() {
-        return Collections.singleton(turnstilePart);
+        if (turnstilePart == null)
+            return Collections.emptyList();
+        else
+            return Collections.singleton(turnstilePart);
     }
 }
