@@ -29,6 +29,11 @@ public interface Price {
         public @NotNull Type type() {
             return Type.EMPTY;
         }
+
+        @Override
+        public String toString() {
+            return "Free";
+        }
     }
 
     /**
