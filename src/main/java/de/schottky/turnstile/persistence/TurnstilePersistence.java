@@ -8,8 +8,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import de.schottky.turnstile.*;
-import de.schottky.turnstile.activator.TurnstileActivator;
-import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.ItemPrice;
 import de.schottky.turnstile.economy.Price;
 import org.bukkit.Location;

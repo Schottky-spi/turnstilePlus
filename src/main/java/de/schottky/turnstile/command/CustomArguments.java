@@ -1,7 +1,9 @@
 package de.schottky.turnstile.command;
 
 import com.github.schottky.zener.command.CommandContext;
-import com.github.schottky.zener.command.resolver.*;
+import com.github.schottky.zener.command.resolver.ArgumentNotResolvable;
+import com.github.schottky.zener.command.resolver.ArgumentResolver;
+import com.github.schottky.zener.command.resolver.CommandException;
 import com.github.schottky.zener.command.resolver.argument.AbstractContextualArgument;
 import com.github.schottky.zener.command.resolver.argument.AbstractHighLevelArg;
 import com.github.schottky.zener.command.resolver.argument.AbstractLowLevelArg;
