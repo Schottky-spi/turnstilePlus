@@ -53,7 +53,6 @@ public class ButtonActivator extends AbstractActivator {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         ButtonActivator that = (ButtonActivator) o;
-        System.out.println(Objects.equals(buttonLocation, that.buttonLocation));
         return Objects.equals(buttonLocation, that.buttonLocation);
     }
 

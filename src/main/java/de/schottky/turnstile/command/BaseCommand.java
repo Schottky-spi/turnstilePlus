@@ -109,12 +109,15 @@ public class BaseCommand extends CommandBase {
         player.sendMessage("Price: " + turnstile.price());
     }
 
-
     @SubCmd(value = "link")
-    public void link(Turnstile turnstile, Linkable linkable) {
-        turnstile.link(linkable);
+    public void link(Turnstile turnstile, Linkable linkable, @Unresolved Player sender) {
+        if (linkable.linkedTurnstile() != null && linkable.linkedTurnstile() != turnstile) {
+            sender.sendMessage(
+                    "This " + linkable + " is already linked to turnstile " + linkable.linkedTurnstile().name());
+        } else {
+            turnstile.link(linkable);
+        }
     }
-
 
     @SubCmd(value = "unlink")
     public void unlink(Turnstile turnstile, Linkable linkable) {

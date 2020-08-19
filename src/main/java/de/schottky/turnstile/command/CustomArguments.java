@@ -101,31 +101,23 @@ public class CustomArguments {
             final BlockIterator blockIterator = new BlockIterator(player.getLocation(), 1.5, 5);
             while (blockIterator.hasNext()) {
                 final Block block = blockIterator.next();
+                for (String metadata: MetadataKeys.allKeys()) {
+                    if (block.hasMetadata(metadata)) {
+                        final Object value = block.getMetadata(metadata).get(0);
+                        if (value instanceof Linkable)
+                            return (Linkable) value;
+                    }
+                }
                 if (Tag.BUTTONS.isTagged(block.getType())) {
-                    check(block);
                     return new ButtonActivator(block);
                 } else if (CustomTags.PRESSURE_PLATES.isTagged(block.getType())) {
-                    check(block);
                     return new PressurePlateActivator(block);
                 } else if (Tag.SIGNS.isTagged(block.getType())) {
-                    check(block);
                     return new SignDisplay(block);
                 }
                 if (block.getType().isSolid()) { break; }
             }
             throw ArgumentNotResolvable.withMessage("This cannot be linked");
-        }
-
-        private void check(Block block) throws ArgumentNotResolvable {
-            for (String metadata: MetadataKeys.allKeys()) {
-                if (block.hasMetadata(metadata)) {
-                    final Object metadataValue = block.getMetadata(metadata).get(0).value();
-                    if (metadataValue instanceof Linkable) {
-                        throw ArgumentNotResolvable.withMessage("This is already linked to " +
-                                ((Linkable) metadataValue).linkedTurnstile().name());
-                    }
-                }
-            }
         }
 
     }

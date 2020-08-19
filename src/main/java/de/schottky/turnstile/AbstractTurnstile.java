@@ -28,6 +28,8 @@ public abstract class AbstractTurnstile implements Turnstile {
 
     public void link(Linkable linkable) {
         if (linkable.link(this)) {
+            // remove and add to allow overrides
+            this.linkables.remove(linkable);
             this.linkables.add(linkable);
             TurnstilePersistence.saveAllAsyncFor(ownerUUID());
             owningOnlinePlayer().ifPresent(p -> p.sendMessage("You have linked this " + linkable));
@@ -37,6 +39,7 @@ public abstract class AbstractTurnstile implements Turnstile {
 
     public void unlink(Linkable linkable) {
         linkable.destroy();
+        owningOnlinePlayer().ifPresent(player -> player.sendMessage("Successfully removed " + linkable));
         TurnstilePersistence.saveAllAsyncFor(ownerUUID());
     }
 

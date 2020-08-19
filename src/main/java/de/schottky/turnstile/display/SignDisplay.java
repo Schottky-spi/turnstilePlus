@@ -12,6 +12,7 @@ import org.bukkit.metadata.FixedMetadataValue;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * A {@link TurnstileInformationDisplay} that is based on a sign
@@ -95,6 +96,19 @@ public class SignDisplay implements TurnstileInformationDisplay {
             sign.setLine(i, line);
         }
         sign.update();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SignDisplay that = (SignDisplay) o;
+        return Objects.equals(signLocation, that.signLocation);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(signLocation);
     }
 
     @Override
