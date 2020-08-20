@@ -22,7 +22,7 @@ public class BaseCommand extends CommandBase {
         this.registerSubCommands(new PriceCommand(this));
     }
 
-    @SubCmd(value = "list", desc = "Lists all turnstiles you own")
+    @SubCmd(value = "list", desc = "Lists all turnstiles you own.")
     public void listAll(@Unresolved Player sender) {
         Collection<Turnstile> turnstiles = TurnstileManager.instance().allTurnstilesForPlayer(sender);
 
@@ -36,7 +36,7 @@ public class BaseCommand extends CommandBase {
         }
     }
 
-    @SubCmd(value = "setup", desc = "Create new turnstile from a block you are targeting.")
+    @SubCmd(value = "setup", desc = "Create a turnstile from a target block.")
     public void setupTurnstile(Block block, String turnstileName, @Unresolved Player sender) throws CommandException {
         TurnstilePart part;
         if (Tag.DOORS.isTagged(block.getType())) {
@@ -61,13 +61,13 @@ public class BaseCommand extends CommandBase {
     }
 
 
-    @SubCmd(value = "setOwner", desc = "Sets owner of a turnstile (collects price).")
+    @SubCmd(value = "setOwner", desc = "Sets owner of a turnstile (gets reward).")
     public void setOwner(OfflinePlayer owner, Turnstile turnstile) {
         turnstile.setOwner(owner);
     }
 
 
-    @SubCmd(value = "remove", desc = "Removes a turnstile")
+    @SubCmd(value = "remove", desc = "Removes a turnstile.")
     public void removeTurnstile(Turnstile turnstile) {
         TurnstileManager.instance().removeTurnstile(turnstile);
     }
@@ -90,7 +90,7 @@ public class BaseCommand extends CommandBase {
         player.sendMessage("Price: " + turnstile.price());
     }
 
-    @SubCmd(value = "link", desc = "Links the turnstile to button (opens) or sign (displays information) you are targeting.")
+    @SubCmd(value = "link", desc = "Links the turnstile to a target button or sign.")
     public void link(Linkable linkable, Turnstile turnstile, @Unresolved Player sender) {
         if (linkable.linkedTurnstile() != null && linkable.linkedTurnstile() != turnstile) {
             sender.sendMessage(
@@ -100,7 +100,7 @@ public class BaseCommand extends CommandBase {
         }
     }
 
-    @SubCmd(value = "unlink", desc = "Unlink buttons or signs you are targeting from the turnstile.")
+    @SubCmd(value = "unlink", desc = "Unlink target buttons/signs from the turnstile.")
     public void unlink(Linkable linkable, Turnstile turnstile) {
         turnstile.unlink(linkable);
     }
