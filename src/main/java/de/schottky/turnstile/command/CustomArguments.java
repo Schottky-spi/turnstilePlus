@@ -40,6 +40,10 @@ public class CustomArguments {
 
     public static class TurnstileArgument extends AbstractLowLevelArg<Turnstile> {
 
+        public TurnstileArgument() {
+            this.description = "turnstile";
+        }
+
         @Override
         protected Turnstile fromArgument(String arg, CommandContext context) throws CommandException {
             return TurnstileManager.instance().forName(arg, context.getPlayer())
@@ -63,7 +67,7 @@ public class CustomArguments {
     public static class EconomyPriceArgument extends AbstractHighLevelArg<EconomyPrice> {
 
         public EconomyPriceArgument() {
-            super(new Arguments.DoubleArgument());
+            super(new Arguments.DoubleArgument().withDescription("price"));
         }
 
         @Override

@@ -47,16 +47,8 @@ public class PriceCommand extends SubCommand<BaseCommand> {
     }
 
     @Override
-    public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        for (SubCommand<?> command1: subCommands) {
-            player.sendMessage("/turnstile setPrice " + command1.name() + " - " + command1.simpleDescription());
-        }
-        return true;
-    }
-
-    @Override
     public String tooFewArgumentsMessage(int missing) {
-        if (missing == 2) return "please provide the name for thr turnstile";
+        if (missing == 2) return "please provide the name for the turnstile";
         if (missing == 1) return "please provide a price";
         return "";
     }

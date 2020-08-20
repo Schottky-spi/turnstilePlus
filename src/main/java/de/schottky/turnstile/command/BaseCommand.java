@@ -3,27 +3,14 @@ package de.schottky.turnstile.command;
 import com.github.schottky.zener.command.Cmd;
 import com.github.schottky.zener.command.CommandBase;
 import com.github.schottky.zener.command.SubCmd;
-import com.github.schottky.zener.command.SubCommand;
 import com.github.schottky.zener.command.resolver.CommandException;
 import com.github.schottky.zener.command.resolver.Unresolved;
-import de.schottky.turnstile.DoorBlockTurnstilePart;
-import de.schottky.turnstile.Linkable;
-import de.schottky.turnstile.SimpleTurnstile;
-import de.schottky.turnstile.SingleBlockTurnstilePart;
-import de.schottky.turnstile.Turnstile;
-import de.schottky.turnstile.TurnstileManager;
-import de.schottky.turnstile.TurnstilePart;
+import de.schottky.turnstile.*;
 import de.schottky.turnstile.economy.ItemPrice;
-import net.md_5.bungee.api.ChatColor;
-import net.md_5.bungee.api.chat.BaseComponent;
-import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Tag;
 import org.bukkit.block.Block;
-import org.bukkit.command.Command;
 import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
@@ -33,28 +20,6 @@ public class BaseCommand extends CommandBase {
     public BaseCommand() {
         super();
         this.registerSubCommands(new PriceCommand(this));
-    }
-
-    @Override
-    public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        player.sendMessage("==:: TurnstilePlus ::==");
-        subCommands.forEach(subCommand -> player.spigot().sendMessage(createNiceDescription(subCommand)));
-        return true;
-    }
-
-    private BaseComponent[] createNiceDescription(SubCommand<?> subCommand) {
-        final BaseComponent[] command = new ComponentBuilder()
-                .event(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/turnstile " + subCommand.name()))
-                .append("/turnstile ")
-                .color(ChatColor.AQUA)
-                .append(subCommand.name())
-                .create();
-        return new ComponentBuilder()
-                .append(command)
-                .reset()
-                .append(" - ")
-                .append(subCommand.simpleDescription())
-                .create();
     }
 
     @SubCmd(value = "list", desc = "Lists all turnstiles you own")
@@ -129,5 +94,4 @@ public class BaseCommand extends CommandBase {
     public void unlink(Turnstile turnstile, Linkable linkable) {
         turnstile.unlink(linkable);
     }
-
 }
