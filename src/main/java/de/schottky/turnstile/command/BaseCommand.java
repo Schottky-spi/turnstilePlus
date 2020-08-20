@@ -6,7 +6,13 @@ import com.github.schottky.zener.command.SubCmd;
 import com.github.schottky.zener.command.SubCommand;
 import com.github.schottky.zener.command.resolver.CommandException;
 import com.github.schottky.zener.command.resolver.Unresolved;
-import de.schottky.turnstile.*;
+import de.schottky.turnstile.DoorBlockTurnstilePart;
+import de.schottky.turnstile.Linkable;
+import de.schottky.turnstile.SimpleTurnstile;
+import de.schottky.turnstile.SingleBlockTurnstilePart;
+import de.schottky.turnstile.Turnstile;
+import de.schottky.turnstile.TurnstileManager;
+import de.schottky.turnstile.TurnstilePart;
 import de.schottky.turnstile.economy.ItemPrice;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
@@ -31,7 +37,7 @@ public class BaseCommand extends CommandBase {
 
     @Override
     public boolean onPlayerCommand(@NotNull Player player, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        player.sendMessage(":: TurnstilePlus ::");
+        player.sendMessage("==:: TurnstilePlus ::==");
         subCommands.forEach(subCommand -> player.spigot().sendMessage(createNiceDescription(subCommand)));
         return true;
     }
@@ -51,12 +57,12 @@ public class BaseCommand extends CommandBase {
                 .create();
     }
 
-    @SubCmd(value = "list", desc = "Lists all turnstiles that you have")
+    @SubCmd(value = "list", desc = "Lists all turnstiles you own")
     public void listAll(@Unresolved Player sender) {
         Collection<Turnstile> turnstiles = TurnstileManager.instance().allTurnstilesForPlayer(sender);
 
         if (!turnstiles.isEmpty()) {
-            sender.sendMessage("You have setup the following turnstiles:");
+            sender.sendMessage("You own following turnstiles:");
             for (Turnstile turnstile : turnstiles) {
                 sender.sendMessage(turnstile.name());
             }
@@ -65,7 +71,7 @@ public class BaseCommand extends CommandBase {
         }
     }
 
-    @SubCmd("setup")
+    @SubCmd(value = "setup", desc = "Create new turnstile from a block you are targeting.")
     public void setupTurnstile(Block block, String turnstileName, @Unresolved Player sender) throws CommandException {
         TurnstilePart part;
         if (Tag.DOORS.isTagged(block.getType())) {
@@ -80,36 +86,36 @@ public class BaseCommand extends CommandBase {
     }
 
 
-    @SubCmd("setOwner")
+    @SubCmd(value = "setOwner", desc = "Sets owner of a turnstile (collects price).")
     public void setOwner(Turnstile turnstile, OfflinePlayer owner) {
         turnstile.setOwner(owner);
     }
 
 
-    @SubCmd(value = "remove", desc = "removes a turnstile")
+    @SubCmd(value = "remove", desc = "Removes a turnstile")
     public void removeTurnstile(Turnstile turnstile) {
         TurnstileManager.instance().removeTurnstile(turnstile);
     }
 
 
-    @SubCmd(value = "activate", desc = "activates the turnstile for a player")
+    @SubCmd(value = "activate", desc = "Activates the turnstile for a player.")
     public void activateTurnstile(Turnstile turnstile, Player player) {
         turnstile.requestActivation(player);
     }
 
 
-    @SubCmd(value = "collect", desc = "Collect all items from your turnstile")
+    @SubCmd(value = "collect", desc = "Collect all items from your turnstile.")
     public void collectPendingItems(@Unresolved Player sender) {
         ItemPrice.collectPendingItems(sender);
     }
 
 
-    @SubCmd(value = "info", desc = "displays information about the turnstile")
+    @SubCmd(value = "info", desc = "Displays information about the turnstile.")
     public void info(@Unresolved Player player, Turnstile turnstile) {
         player.sendMessage("Price: " + turnstile.price());
     }
 
-    @SubCmd(value = "link")
+    @SubCmd(value = "link", desc = "Links the turnstile to button (opens) or sign (displays information) you are targeting.")
     public void link(Turnstile turnstile, Linkable linkable, @Unresolved Player sender) {
         if (linkable.linkedTurnstile() != null && linkable.linkedTurnstile() != turnstile) {
             sender.sendMessage(
@@ -119,7 +125,7 @@ public class BaseCommand extends CommandBase {
         }
     }
 
-    @SubCmd(value = "unlink")
+    @SubCmd(value = "unlink", desc = "Unlink buttons or signs you are targeting from the turnstile.")
     public void unlink(Turnstile turnstile, Linkable linkable) {
         turnstile.unlink(linkable);
     }

@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
-@Cmd(value = "setPrice", permission = "ts.command.setPrice")
+@Cmd(value = "setPrice", permission = "ts.command.setPrice", desc = "Sets money, ticket or item price for the turnstile.")
 public class PriceCommand extends SubCommand<BaseCommand> {
 
     public PriceCommand(BaseCommand parentCommand) {

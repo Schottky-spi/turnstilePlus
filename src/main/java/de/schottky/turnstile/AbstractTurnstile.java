@@ -184,7 +184,7 @@ public abstract class AbstractTurnstile implements Turnstile {
             acceptedPlayers.add(player.getUniqueId());
             TurnstileManager.instance().postTurnstileUpdate(this);
             setOpen(true);
-            player.sendMessage("here you go!");
+            player.sendMessage("Here you go! You can go through now.");
         }
     }
 
