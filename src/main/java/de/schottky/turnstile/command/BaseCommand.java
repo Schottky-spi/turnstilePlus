@@ -50,9 +50,19 @@ public class BaseCommand extends CommandBase {
         TurnstileManager.instance().registerTurnstile(sender, turnstile);
     }
 
+    @SubCmd("enterEditMode")
+    public void enterEditMode(@Unresolved Player player, Turnstile turnstile) {
+        TurnstileEditMode.enterEditMode(player, turnstile);
+    }
+
+    @SubCmd("exitEditMode")
+    public void exitEditMode(@Unresolved Player player) {
+        TurnstileEditMode.exitEditMode(player);
+    }
+
 
     @SubCmd(value = "setOwner", desc = "Sets owner of a turnstile (collects price).")
-    public void setOwner(Turnstile turnstile, OfflinePlayer owner) {
+    public void setOwner(OfflinePlayer owner, Turnstile turnstile) {
         turnstile.setOwner(owner);
     }
 
@@ -64,7 +74,7 @@ public class BaseCommand extends CommandBase {
 
 
     @SubCmd(value = "activate", desc = "Activates the turnstile for a player.")
-    public void activateTurnstile(Turnstile turnstile, Player player) {
+    public void activateTurnstile(Player player, Turnstile turnstile) {
         turnstile.requestActivation(player);
     }
 
@@ -81,7 +91,7 @@ public class BaseCommand extends CommandBase {
     }
 
     @SubCmd(value = "link", desc = "Links the turnstile to button (opens) or sign (displays information) you are targeting.")
-    public void link(Turnstile turnstile, Linkable linkable, @Unresolved Player sender) {
+    public void link(Linkable linkable, Turnstile turnstile, @Unresolved Player sender) {
         if (linkable.linkedTurnstile() != null && linkable.linkedTurnstile() != turnstile) {
             sender.sendMessage(
                     "This " + linkable + " is already linked to turnstile " + linkable.linkedTurnstile().name());
@@ -91,7 +101,7 @@ public class BaseCommand extends CommandBase {
     }
 
     @SubCmd(value = "unlink", desc = "Unlink buttons or signs you are targeting from the turnstile.")
-    public void unlink(Turnstile turnstile, Linkable linkable) {
+    public void unlink(Linkable linkable, Turnstile turnstile) {
         turnstile.unlink(linkable);
     }
 }

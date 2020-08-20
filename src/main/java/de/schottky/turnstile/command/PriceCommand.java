@@ -9,9 +9,6 @@ import de.schottky.turnstile.economy.ItemPrice;
 import de.schottky.turnstile.economy.Price;
 import de.schottky.turnstile.economy.TicketPrice;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.Command;
-import org.bukkit.entity.Player;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
 
@@ -23,21 +20,21 @@ public class PriceCommand extends SubCommand<BaseCommand> {
     }
 
     @SubCmd(value = "money", desc = "Set a new price")
-    public void setMoneyPrice(Turnstile turnstile, EconomyPrice price) {
-        setPrice(turnstile, price);
+    public void setMoneyPrice(EconomyPrice price, Turnstile turnstile) {
+        setPrice(price, turnstile);
     }
 
     @SubCmd(value = "ticket", desc = "Set a new ticket-price")
-    public void setTicketPrice(Turnstile turnstile, TicketPrice price) {
-        setPrice(turnstile, price);
+    public void setTicketPrice(TicketPrice price, Turnstile turnstile) {
+        setPrice(price, turnstile);
     }
 
     @SubCmd(value = "item", desc = "Set a new item-price")
-    public void setItemPrice(Turnstile turnstile, ItemPrice price) {
-        setPrice(turnstile, price);
+    public void setItemPrice(ItemPrice price, Turnstile turnstile) {
+        setPrice(price, turnstile);
     }
 
-    private void setPrice(Turnstile turnstile, Price price) {
+    private void setPrice(Price price, Turnstile turnstile) {
         turnstile.setPrice(price);
         final OfflinePlayer player = turnstile.owningPlayer();
         if (player.isOnline()) {
