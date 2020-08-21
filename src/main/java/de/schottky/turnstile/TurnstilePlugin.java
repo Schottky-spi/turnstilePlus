@@ -2,6 +2,8 @@ package de.schottky.turnstile;
 
 import com.github.schottky.zener.api.Zener;
 import com.github.schottky.zener.command.Commands;
+import com.github.schottky.zener.localization.Language;
+import com.github.schottky.zener.localization.LanguageFile;
 import de.schottky.turnstile.command.BaseCommand;
 import de.schottky.turnstile.command.CustomArguments;
 import de.schottky.turnstile.economy.VaultHandler;
@@ -14,11 +16,15 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.Locale;
+
 public class TurnstilePlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
         Zener.start(this);
+        Language.setCurrent(Language.forPlugin(this, Locale.US, LanguageFile.StorageProvider.JSON));
+
         CustomArguments.registerAll();
         Commands.registerAll(new BaseCommand());
 

@@ -1,0 +1,17 @@
+{
+    "command.turnstile.list.short_description": "Lists all turnstiles you own",
+    "command.turnstile.setup.short_description": "Create a turnstile from a target block",
+    "command.turnstile.setup.enter_edit_mode.short_description": "Edit a single turnstile",
+    "command.turnstile.setup.exit_edit_mode.short_description": "Exit the editing-mode",
+    "command.turnstile.set_owner.short_description": "Sets owner of a turnstile (gets reward)",
+    "command.turnstile.remove.short_description": "Removes a turnstile",
+    "command.turnstile.activate.short_description": "Activates the turnstile for a player",
+    "command.turnstile.collect.short_description": "Collect all items from your turnstile",
+    "command.turnstile.info.short_description": "Displays information about the turnstile",
+    "command.turnstile.link.short_description": "Links the turnstile to a target button or sign",
+    "command.turnstile.unlink.short_description": "Unlink target buttons/signs from the turnstile",
+    "command.turnstile.set_price.short_description": "Sets money, ticket or item price for the turnstile",
+    "command.turnstile.set_price.money.short_description": "Set a new price",
+    "command.turnstile.set_price.item.short_description": "Set a new item-price",
+    "command.turnstile.set_price.ticket.short_description": "Set a new ticket-price"
+}

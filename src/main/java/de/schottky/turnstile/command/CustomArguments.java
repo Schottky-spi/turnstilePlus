@@ -27,8 +27,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.BlockIterator;
 
-import java.util.stream.Stream;
-
 public class CustomArguments {
 
     public static void registerAll() {
@@ -53,47 +51,36 @@ public class CustomArguments {
             return 2;
         }
 
-        public TurnstileArgument() {
-            super(new Arguments.StringArgument()
-                    .withOptions(context -> {
-                        try {
-                            return TurnstileManager
+        public TurnstileArgument(CommandContext context) {
+            super(context,
+                    new Arguments.StringArgument(context)
+                            .withOptions(TurnstileManager
                                     .instance()
                                     .allTurnstilesForPlayer(context.getPlayer())
                                     .stream()
-                                    .map(Turnstile::name);
-                        } catch (CommandException e) {
-                            return Stream.empty();
-                        }
-                    })
-                    .withDescription("turnstile")
-                    .setOptional(true),
-                    new Arguments.PlayerArg()
+                                    .map(Turnstile::name))
+                    .withDescription("turnstile"),
+                    new Arguments.PlayerArg(context)
                             .setOptional(true));
         }
 
         @Override
-        public Turnstile value() {
-            return null;
-        }
+        public Turnstile value() throws CommandException {
+            final String name = contents[0].as(String.class);
+            final Player player = contents[1].as(Player.class);
 
-
-        @Override
-        public Turnstile value(CommandContext context) throws CommandException {
-            if (contents[0].value() == null) {
+            if (name == null) {
                 return TurnstileEditMode.forPlayer(context.getPlayer())
-                        .orElseThrow(() -> new CommandException("Please specify a name"));
-            } else if (contents[1].value() == null) {
+                        .orElseThrow(() -> ArgumentNotResolvable.withMessage("Please specify a name"));
+            } else if (player == null) {
                 return TurnstileManager
                         .instance()
                         .forName(contents[0].as(String.class), context.getPlayer())
-                        .orElseThrow(() -> new CommandException("You do not own a turnstile by that name"));
+                        .orElseThrow(() -> ArgumentNotResolvable.withMessage("You do not own a turnstile by that name"));
             } else {
-                final Player player = contents[1].as(Player.class);
-                final String name = contents[0].as(String.class);
                 return TurnstileManager
                         .instance()
-                        .forName(contents[0].as(String.class), player)
+                        .forName(name, player)
                         .orElseThrow(() -> new CommandException("Player " + player + " does not own a turnstile " +
                                 "by the name of" + name));
             }
@@ -102,8 +89,10 @@ public class CustomArguments {
 
     public static class EconomyPriceArgument extends AbstractHighLevelArg<EconomyPrice> {
 
-        public EconomyPriceArgument() {
-            super(new Arguments.DoubleArgument().withDescription("price"));
+        public EconomyPriceArgument(CommandContext context) {
+            super(context,
+                    new Arguments.DoubleArgument(context)
+                            .withDescription("price"));
         }
 
         @Override
@@ -113,8 +102,9 @@ public class CustomArguments {
     }
 
     public static class ItemPriceArgument extends AbstractHighLevelArg<ItemPrice> {
-        public ItemPriceArgument() {
-            super(new Arguments.ItemStackArgument());
+        public ItemPriceArgument(CommandContext context) {
+            super(context,
+                    new Arguments.ItemStackArgument(context));
         }
 
         @Override
@@ -125,8 +115,8 @@ public class CustomArguments {
 
     public static class TicketArgument extends AbstractHighLevelArg<TicketPrice> {
 
-        public TicketArgument() {
-            super(new Arguments.ItemStackArgument());
+        public TicketArgument(CommandContext context) {
+            super(context, new Arguments.ItemStackArgument(context));
         }
 
         @Override
@@ -137,8 +127,10 @@ public class CustomArguments {
 
     public static class NonVariableItemStackArgument extends AbstractHighLevelArg<ItemStack> {
 
-        public NonVariableItemStackArgument() {
-            super(new Arguments.MaterialArgument(), new Arguments.IntArgument());
+        public NonVariableItemStackArgument(CommandContext context) {
+            super(context,
+                    new Arguments.MaterialArgument(context),
+                    new Arguments.IntArgument(context));
         }
 
         @Override
@@ -149,8 +141,12 @@ public class CustomArguments {
 
     public static class LinkableArgument extends AbstractContextualArgument<Linkable> {
 
+        public LinkableArgument(CommandContext context) {
+            super(context);
+        }
+
         @Override
-        public Linkable fromContext(CommandContext context) throws CommandException {
+        public Linkable fromContext() throws CommandException {
             final Player player = context.getPlayer();
             final BlockIterator blockIterator = new BlockIterator(player.getLocation(), 1.5, 5);
             while (blockIterator.hasNext()) {
@@ -178,8 +174,12 @@ public class CustomArguments {
 
     public static class BlockArgument extends AbstractContextualArgument<Block> {
 
+        public BlockArgument(CommandContext context) {
+            super(context);
+        }
+
         @Override
-        public Block fromContext(CommandContext context) throws CommandException {
+        public Block fromContext() throws CommandException {
             final Block block = context.getPlayer().getTargetBlock(null, 20);
             if (block.getType().isAir())
                 throw ArgumentNotResolvable.withMessage("You are not looking at a block!");

@@ -19,17 +19,17 @@ public class PriceCommand extends SubCommand<BaseCommand> {
         super(parentCommand);
     }
 
-    @SubCmd(value = "money", desc = "Set a new price")
+    @SubCmd("money")
     public void setMoneyPrice(EconomyPrice price, Turnstile turnstile) {
         setPrice(price, turnstile);
     }
 
-    @SubCmd(value = "ticket", desc = "Set a new ticket-price")
+    @SubCmd("ticket")
     public void setTicketPrice(TicketPrice price, Turnstile turnstile) {
         setPrice(price, turnstile);
     }
 
-    @SubCmd(value = "item", desc = "Set a new item-price")
+    @SubCmd("item")
     public void setItemPrice(ItemPrice price, Turnstile turnstile) {
         setPrice(price, turnstile);
     }
