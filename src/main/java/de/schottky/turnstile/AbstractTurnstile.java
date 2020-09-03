@@ -1,13 +1,15 @@
 package de.schottky.turnstile;
 
+import com.github.schottky.zener.localization.I18n;
 import de.schottky.turnstile.chrono.Countdown;
 import de.schottky.turnstile.display.TurnstileInformationDisplay;
 import de.schottky.turnstile.economy.Price;
 import de.schottky.turnstile.persistence.RequiredConstructor;
 import de.schottky.turnstile.persistence.TurnstilePersistence;
-import net.md_5.bungee.api.ChatColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -26,20 +28,22 @@ public abstract class AbstractTurnstile implements Turnstile {
 
     private final Set<Linkable> linkables = new HashSet<>();
 
-    public void link(Linkable linkable) {
+    public void link(@NotNull Linkable linkable) {
         if (linkable.link(this)) {
             // remove and add to allow overrides
             this.linkables.remove(linkable);
             this.linkables.add(linkable);
             TurnstilePersistence.saveAllAsyncFor(ownerUUID());
-            owningOnlinePlayer().ifPresent(p -> p.sendMessage("You have linked this " + linkable));
+            owningOnlinePlayer().ifPresent(p ->
+                    p.sendMessage(I18n.of("message.linking.successful", "linkable", linkable)));
         }
         postUpdate();
     }
 
-    public void unlink(Linkable linkable) {
+    public void unlink(@NotNull Linkable linkable) {
         linkable.destroy();
-        owningOnlinePlayer().ifPresent(player -> player.sendMessage("Successfully removed " + linkable));
+        owningOnlinePlayer().ifPresent(p ->
+                p.sendMessage(I18n.of("message.linking.removed", "linkable", linkable)));
         TurnstilePersistence.saveAllAsyncFor(ownerUUID());
     }
 
@@ -47,7 +51,8 @@ public abstract class AbstractTurnstile implements Turnstile {
         linkables.forEach(Linkable::destroy);
         linkables.clear();
         allParts().forEach(TurnstilePart::destroy);
-        owningOnlinePlayer().ifPresent(player -> player.sendMessage("removed turnstile " + name()));
+        owningOnlinePlayer().ifPresent(p ->
+                p.sendMessage(I18n.of("message.removed", "name", name())));
     }
 
     @Override
@@ -92,15 +97,13 @@ public abstract class AbstractTurnstile implements Turnstile {
         return Optional.ofNullable(owningPlayer().getPlayer());
     }
 
-    public void setOwner(OfflinePlayer player) {
+    public void setOwner(@NotNull OfflinePlayer player) {
         final Player previousOwner = Bukkit.getPlayer(ownerUUID());
         if (previousOwner != null)
-            previousOwner.sendMessage("You are no longer the owner of turnstile " + name());
+            previousOwner.sendMessage(I18n.of("message.owner_removed", "name", name()));
 
-        this.owner = player.getUniqueId();
-        if (player.isOnline())
-            Objects.requireNonNull(player.getPlayer()).sendMessage(
-                    "You are now the owner of turnstile " + name());
+        owningOnlinePlayer().ifPresent(p ->
+                p.sendMessage(I18n.of("message.claimed_ownership", "name", name())));
 
         postUpdate();
     }
@@ -122,12 +125,33 @@ public abstract class AbstractTurnstile implements Turnstile {
     @Override
     public void setPrice(@Nullable Price price) {
         this.price = price == null ? Price.emptyPrice() : price;
+        owningOnlinePlayer().ifPresent(p -> p.sendMessage(I18n.of("message.new_price_set",
+                "price", price(),
+                "turnstile", name())));
         postUpdate();
     }
 
     @Override
-    public Price price() {
+    public @NotNull Price price() {
         return price;
+    }
+
+    @Override
+    public @NotNull Location location() {
+        double x = 0;
+        double y = 0;
+        double z = 0;
+        double i = 0;
+        World world = null;
+        for (TurnstilePart part: allParts()) {
+            final Location partLocation = part.location();
+            x += partLocation.getX();
+            y += partLocation.getY();
+            z += partLocation.getZ();
+            world = partLocation.getWorld();
+            i++;
+        }
+        return new Location(world, x / i, y / i, z / i);
     }
 
     /**
@@ -156,7 +180,7 @@ public abstract class AbstractTurnstile implements Turnstile {
     private transient final Map<UUID,BlockFace> playersInTurnstile = new HashMap<>();
 
     @Override
-    public void onPlayerEnter(Player player, BlockFace direction) {
+    public void onPlayerEnter(@NotNull Player player, @NotNull BlockFace direction) {
         if (!acceptedPlayers.contains(player.getUniqueId())) {
             player.setVelocity(direction.getDirection().multiply(-2));
         } else {
@@ -165,7 +189,7 @@ public abstract class AbstractTurnstile implements Turnstile {
     }
 
     @Override
-    public void onPlayerLeave(Player player, BlockFace direction) {
+    public void onPlayerLeave(@NotNull Player player, @NotNull BlockFace direction) {
         final BlockFace entered = playersInTurnstile.remove(player.getUniqueId());
         if (entered == null) {
             player.setVelocity(direction.getDirection().multiply(-2));
@@ -177,28 +201,28 @@ public abstract class AbstractTurnstile implements Turnstile {
     }
 
     @Override
-    public void requestActivation(Player player) {
+    public void requestActivation(@NotNull Player player) {
         if (acceptedPlayers.contains(player.getUniqueId())) {
-            player.sendMessage(ChatColor.RED + "You have already payed. Go through!");
+            player.sendMessage(I18n.of("message.already_payed"));
         } else if (withdrawToll(player)) {
             acceptedPlayers.add(player.getUniqueId());
             TurnstileManager.instance().postTurnstileUpdate(this);
             setOpen(true);
-            player.sendMessage("Here you go! You can go through now.");
+            player.sendMessage(I18n.of("message.can_go_through"));
         }
     }
 
     @Override
-    public Status currentStatus() {
+    public @NotNull Status currentStatus() {
         return acceptedPlayers.isEmpty() ? Status.CLOSED : Status.OPEN;
     }
 
     protected boolean withdrawToll(Player player) {
         if (price.withdrawFromPlayer(player, owningPlayer())) {
-            player.sendMessage("You have been withdrawn " + price);
+            player.sendMessage(I18n.of("message.price.withdrawn", "price", price()));
             return true;
         } else {
-            player.sendMessage("You do not have " + price);
+            player.sendMessage(I18n.of("message.price.not_enough", "price", price));
             return false;
         }
     }

@@ -6,6 +6,7 @@ import com.github.schottky.zener.command.SubCmd;
 import com.github.schottky.zener.command.resolver.CommandException;
 import com.github.schottky.zener.command.resolver.Describe;
 import com.github.schottky.zener.command.resolver.Unresolved;
+import com.github.schottky.zener.localization.I18n;
 import de.schottky.turnstile.*;
 import de.schottky.turnstile.economy.ItemPrice;
 import org.bukkit.OfflinePlayer;
@@ -28,12 +29,12 @@ public class BaseCommand extends CommandBase {
         Collection<Turnstile> turnstiles = TurnstileManager.instance().allTurnstilesForPlayer(sender);
 
         if (!turnstiles.isEmpty()) {
-            sender.sendMessage("You own following turnstiles:");
+            sender.sendMessage(I18n.of("message.list_turnstiles_owned"));
             for (Turnstile turnstile : turnstiles) {
                 sender.sendMessage(turnstile.name());
             }
         } else {
-            sender.sendMessage("You don't have any turnstiles.");
+            sender.sendMessage(I18n.of("message.no_turnstiles_owned"));
         }
     }
 
@@ -45,7 +46,7 @@ public class BaseCommand extends CommandBase {
         } else if (Tag.FENCES.isTagged(block.getType())) {
             part = new SingleBlockTurnstilePart(block);
         } else {
-            throw new CommandException("You are not looking at a turnstile-block");
+            throw new CommandException(I18n.of("no_turnstile_block"));
         }
         final Turnstile turnstile = new SimpleTurnstile(turnstileName, sender, part);
         TurnstileManager.instance().registerTurnstile(sender, turnstile);
@@ -83,14 +84,16 @@ public class BaseCommand extends CommandBase {
 
     @SubCmd("info")
     public void info(@Unresolved Player player, Turnstile turnstile) {
-        player.sendMessage("Price: " + turnstile.price());
+        player.sendMessage(I18n.of("message.info", "price", turnstile.price()));
     }
 
     @SubCmd("link")
     public void link(Linkable linkable, Turnstile turnstile, @Unresolved Player sender) {
         if (linkable.linkedTurnstile() != null && linkable.linkedTurnstile() != turnstile) {
-            sender.sendMessage(
-                    "This " + linkable + " is already linked to turnstile " + linkable.linkedTurnstile().name());
+            sender.sendMessage(I18n.of("message.linkable_already_linked",
+                    "linkable", linkable,
+                    "name", linkable.linkedTurnstile().name()));
+
         } else {
             turnstile.link(linkable);
         }
@@ -99,5 +102,12 @@ public class BaseCommand extends CommandBase {
     @SubCmd("unlink")
     public void unlink(Linkable linkable, Turnstile turnstile) {
         turnstile.unlink(linkable);
+    }
+
+    @SubCmd("locate")
+    public void locate(Turnstile turnstile, @Unresolved Player requester) {
+        requester.sendMessage(I18n.of("message.turnstile_located",
+                "name", turnstile.name(),
+                "location", turnstile.location()));
     }
 }

@@ -25,4 +25,6 @@ public interface TurnstilePart {
     void initAfterLoad();
 
     void destroy();
+
+    Location location();
 }

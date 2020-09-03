@@ -1,5 +1,6 @@
 package de.schottky.turnstile.activator;
 
+import com.github.schottky.zener.localization.Localizable;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstilePlugin;
 import de.schottky.turnstile.metadata.MetadataKeys;
@@ -14,7 +15,7 @@ import java.util.Objects;
 /**
  * An activator that is based upon a pressure-plate
  */
-public class PressurePlateActivator extends AbstractActivator {
+public class PressurePlateActivator extends AbstractActivator implements Localizable {
 
     private Location pressurePlateLocation;
 
@@ -63,5 +64,10 @@ public class PressurePlateActivator extends AbstractActivator {
     @Override
     public int hashCode() {
         return Objects.hash(pressurePlateLocation);
+    }
+
+    @Override
+    public String identifier() {
+        return "ident.activator.pressure_plate";
     }
 }

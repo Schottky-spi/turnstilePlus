@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
+import org.bukkit.util.BoundingBox;
 
 public class SingleBlockTurnstilePart implements TurnstilePart {
 
@@ -15,6 +16,7 @@ public class SingleBlockTurnstilePart implements TurnstilePart {
     public SingleBlockTurnstilePart(Block block, BlockData blockData) {
         this.blockLocation = block.getLocation();
         this.data = blockData;
+        initAfterLoad();
     }
 
     public SingleBlockTurnstilePart(Block block) {
@@ -24,11 +26,11 @@ public class SingleBlockTurnstilePart implements TurnstilePart {
     @RequiredConstructor
     private SingleBlockTurnstilePart() {}
 
+    private transient BoundingBox blockBB;
+
     @Override
     public boolean containsLocation(Location location) {
-        return (location.getX() >= blockLocation.getX() && location.getX() <= blockLocation.getX() + 1) &&
-                (location.getY() >= blockLocation.getY() && location.getY() <= blockLocation.getY() + 1) &&
-                (location.getZ() >= blockLocation.getZ() && location.getZ() <= blockLocation.getZ() + 1);
+        return blockBB.contains(location.toVector());
     }
 
     @Override
@@ -39,8 +41,15 @@ public class SingleBlockTurnstilePart implements TurnstilePart {
     }
 
     @Override
-    public void initAfterLoad() { }
+    public void initAfterLoad() {
+        this.blockBB = blockLocation.getBlock().getBoundingBox();
+    }
 
     @Override
     public void destroy() { }
+
+    @Override
+    public Location location() {
+        return blockLocation.clone();
+    }
 }

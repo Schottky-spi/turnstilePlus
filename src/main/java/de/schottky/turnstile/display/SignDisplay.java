@@ -1,5 +1,6 @@
 package de.schottky.turnstile.display;
 
+import com.github.schottky.zener.localization.Localizable;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstilePlugin;
 import de.schottky.turnstile.metadata.MetadataKeys;
@@ -17,7 +18,7 @@ import java.util.Objects;
 /**
  * A {@link TurnstileInformationDisplay} that is based on a sign
  */
-public class SignDisplay implements TurnstileInformationDisplay {
+public class SignDisplay implements TurnstileInformationDisplay, Localizable {
 
     public static final String METADATA_IDENTIFIER = MetadataKeys.create("sign_display");
 
@@ -114,5 +115,10 @@ public class SignDisplay implements TurnstileInformationDisplay {
     @Override
     public String toString() {
         return "Sign-display";
+    }
+
+    @Override
+    public String identifier() {
+        return "ident.sign_display";
     }
 }

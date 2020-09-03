@@ -9,6 +9,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.block.data.Bisected;
 import org.bukkit.block.data.type.Door;
+import org.bukkit.util.BoundingBox;
 
 public class DoorBlockTurnstilePart implements TurnstilePart {
 
@@ -26,13 +27,13 @@ public class DoorBlockTurnstilePart implements TurnstilePart {
     }
 
     @RequiredConstructor
-    protected DoorBlockTurnstilePart() {}
+    protected DoorBlockTurnstilePart() { }
+
+    private transient BoundingBox door;
 
     @Override
     public boolean containsLocation(Location location) {
-        return (location.getX() >= lowerBlock.getX() && location.getX() <= lowerBlock.getX() + 1) &&
-                (location.getY() >= lowerBlock.getY() && location.getY() <= lowerBlock.getY() + 2) &&
-                (location.getZ() >= lowerBlock.getZ() && location.getZ() <= lowerBlock.getZ() + 1);
+        return door.contains(location.toVector());
     }
 
     @Override
@@ -56,10 +57,16 @@ public class DoorBlockTurnstilePart implements TurnstilePart {
     @Override
     public void initAfterLoad() {
         TurnstilePlugin.instance().doorInteractListener().addObservedLocation(lowerBlock);
+         door = BoundingBox.of(lowerBlock.getBlock(), lowerBlock.getBlock().getRelative(BlockFace.UP));
     }
 
     @Override
     public void destroy() {
         TurnstilePlugin.instance().doorInteractListener().removeObservedLocation(lowerBlock);
+    }
+
+    @Override
+    public Location location() {
+        return lowerBlock.clone().add(0, 1, 0);
     }
 }

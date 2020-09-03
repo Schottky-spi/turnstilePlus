@@ -2,6 +2,8 @@ package de.schottky.turnstile;
 
 import de.schottky.turnstile.persistence.RequiredConstructor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Unmodifiable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,7 +23,7 @@ public class SimpleTurnstile extends AbstractTurnstile {
     }
 
     @Override
-    public Collection<TurnstilePart> allParts() {
+    public @NotNull @Unmodifiable Collection<TurnstilePart> allParts() {
         if (turnstilePart == null)
             return Collections.emptyList();
         else

@@ -7,7 +7,8 @@ import com.github.schottky.zener.command.resolver.CommandException;
 import com.github.schottky.zener.command.resolver.argument.AbstractContextualArgument;
 import com.github.schottky.zener.command.resolver.argument.AbstractHighLevelArg;
 import com.github.schottky.zener.command.resolver.argument.AbstractHighLevelVarArg;
-import com.github.schottky.zener.command.resolver.argument.Arguments;
+import com.github.schottky.zener.command.resolver.argument.ArgumentBuilder;
+import com.github.schottky.zener.localization.I18n;
 import de.schottky.turnstile.Linkable;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstileEditMode;
@@ -53,36 +54,41 @@ public class CustomArguments {
 
         public TurnstileArgument(CommandContext context) {
             super(context,
-                    new Arguments.StringArgument(context)
-                            .withOptions(TurnstileManager
+                    ArgumentBuilder.of(String.class)
+                            .options(TurnstileManager
                                     .instance()
                                     .allTurnstilesForPlayer(context.getPlayer())
                                     .stream()
                                     .map(Turnstile::name))
-                    .withDescription("turnstile"),
-                    new Arguments.PlayerArg(context)
+                            .description(TurnstileEditMode.isEditing(context.getPlayer()) ? null : "turnstile")
+                            .initialValue(TurnstileEditMode.forPlayer(context.getPlayer()).orElse(null))
+                            .setOptional(false),
+                    ArgumentBuilder.of(Player.class)
+                            .requirePermission("turnstile.edit_others")
+                            .description(TurnstileEditMode.isEditing(context.getPlayer()) ? null : "owner")
+                            .initialValue(context.getPlayer())
                             .setOptional(true));
         }
 
         @Override
-        public Turnstile value() throws CommandException {
+        public Turnstile value() {
             final String name = contents[0].as(String.class);
             final Player player = contents[1].as(Player.class);
 
             if (name == null) {
                 return TurnstileEditMode.forPlayer(context.getPlayer())
-                        .orElseThrow(() -> ArgumentNotResolvable.withMessage("Please specify a name"));
+                        .orElseThrow(() -> ArgumentNotResolvable.withMessage(I18n.of("message.missing_name")));
             } else if (player == null) {
                 return TurnstileManager
                         .instance()
                         .forName(contents[0].as(String.class), context.getPlayer())
-                        .orElseThrow(() -> ArgumentNotResolvable.withMessage("You do not own a turnstile by that name"));
+                        .orElseThrow(() -> ArgumentNotResolvable.withMessage(I18n.of("message.turnstile_not_owned")));
             } else {
                 return TurnstileManager
                         .instance()
                         .forName(name, player)
-                        .orElseThrow(() -> new CommandException("Player " + player + " does not own a turnstile " +
-                                "by the name of" + name));
+                        .orElseThrow(() -> new CommandException(
+                                I18n.of("message.player_does_not_own_turnstile", "player", player)));
             }
         }
     }
@@ -90,9 +96,7 @@ public class CustomArguments {
     public static class EconomyPriceArgument extends AbstractHighLevelArg<EconomyPrice> {
 
         public EconomyPriceArgument(CommandContext context) {
-            super(context,
-                    new Arguments.DoubleArgument(context)
-                            .withDescription("price"));
+            super(context, ArgumentBuilder.Double().description("price").options(1, 10, 100));
         }
 
         @Override
@@ -104,7 +108,7 @@ public class CustomArguments {
     public static class ItemPriceArgument extends AbstractHighLevelArg<ItemPrice> {
         public ItemPriceArgument(CommandContext context) {
             super(context,
-                    new Arguments.ItemStackArgument(context));
+                    new NonVariableItemStackArgument(context));
         }
 
         @Override
@@ -116,7 +120,7 @@ public class CustomArguments {
     public static class TicketArgument extends AbstractHighLevelArg<TicketPrice> {
 
         public TicketArgument(CommandContext context) {
-            super(context, new Arguments.ItemStackArgument(context));
+            super(context, new NonVariableItemStackArgument(context));
         }
 
         @Override
@@ -129,8 +133,11 @@ public class CustomArguments {
 
         public NonVariableItemStackArgument(CommandContext context) {
             super(context,
-                    new Arguments.MaterialArgument(context),
-                    new Arguments.IntArgument(context));
+                    ArgumentBuilder.of(Material.class)
+                            .description("type"),
+                    ArgumentBuilder.of(Integer.class)
+                            .options(1, 32, 64)
+                            .description("amount"));
         }
 
         @Override
@@ -167,7 +174,7 @@ public class CustomArguments {
                 }
                 if (block.getType().isSolid()) { break; }
             }
-            throw ArgumentNotResolvable.withMessage("This cannot be linked");
+            throw ArgumentNotResolvable.withMessage(I18n.of("message.not_linkable"));
         }
 
     }
@@ -182,7 +189,7 @@ public class CustomArguments {
         public Block fromContext() throws CommandException {
             final Block block = context.getPlayer().getTargetBlock(null, 20);
             if (block.getType().isAir())
-                throw ArgumentNotResolvable.withMessage("You are not looking at a block!");
+                throw ArgumentNotResolvable.withMessage(I18n.of("command.not_looking_at_block"));
             return block;
         }
     }

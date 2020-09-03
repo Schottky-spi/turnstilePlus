@@ -1,5 +1,6 @@
 package de.schottky.turnstile.economy;
 
+import com.github.schottky.zener.localization.Localizable;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +19,7 @@ public interface Price {
         return new Empty();
     }
 
-    class Empty implements Price {
+    class Empty implements Price, Localizable {
 
         @Override
         public boolean withdrawFromPlayer(Player player, OfflinePlayer owner) {
@@ -32,7 +33,12 @@ public interface Price {
 
         @Override
         public String toString() {
-            return "Free";
+            return "nothing";
+        }
+
+        @Override
+        public String identifier() {
+            return "ident.empty_price";
         }
     }
 

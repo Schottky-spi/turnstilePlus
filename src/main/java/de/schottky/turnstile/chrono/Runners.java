@@ -4,7 +4,7 @@ import de.schottky.turnstile.TurnstilePlugin;
 import org.bukkit.Bukkit;
 
 /**
- * Utility-class that is mainly focues on delaying tasks
+ * Utility-class that is mainly focuses on delaying tasks
  */
 public final class Runners {
 

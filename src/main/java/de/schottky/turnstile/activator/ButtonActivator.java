@@ -1,5 +1,6 @@
 package de.schottky.turnstile.activator;
 
+import com.github.schottky.zener.localization.Localizable;
 import de.schottky.turnstile.Turnstile;
 import de.schottky.turnstile.TurnstilePlugin;
 import de.schottky.turnstile.metadata.MetadataKeys;
@@ -14,7 +15,7 @@ import java.util.Objects;
 /**
  * An activator that is based upon any button
  */
-public class ButtonActivator extends AbstractActivator {
+public class ButtonActivator extends AbstractActivator implements Localizable {
 
     private Location buttonLocation;
 
@@ -64,5 +65,10 @@ public class ButtonActivator extends AbstractActivator {
     @Override
     public int hashCode() {
         return Objects.hash(buttonLocation);
+    }
+
+    @Override
+    public String identifier() {
+        return "ident.activator.button";
     }
 }

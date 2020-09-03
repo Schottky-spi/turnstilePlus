@@ -1,7 +1,9 @@
 package de.schottky.turnstile;
 
+import com.github.schottky.zener.localization.I18n;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import de.schottky.turnstile.config.Config;
 import de.schottky.turnstile.event.PlayerMoveListener;
 import de.schottky.turnstile.persistence.TurnstilePersistence;
 import org.bukkit.block.BlockFace;
@@ -61,12 +63,20 @@ public final class TurnstileManager {
      */
 
     public void registerTurnstile(Player player, Turnstile turnstile) {
+        if (allTurnstiles.contains(turnstile)) {
+            player.sendMessage(I18n.of("message.turnstile_already_exists"));
+            return;
+        }
+        for (Turnstile otherTurnstile: allTurnstiles) {
+            if (otherTurnstile.location().distanceSquared(turnstile.location()) < Config.minCreationRadius * Config.minCreationRadius) {
+                player.sendMessage(I18n.of("message.turnstile_too_close"));
+                return;
+            }
+        }
         allTurnstiles.add(turnstile);
         TurnstilePersistence.saveAsync(player.getUniqueId(), allTurnstilesForPlayer(player));
         turnstile.setOpen(false);
-        player.sendMessage("You have setup a new turnstile");
-        player.sendMessage("Use /ts setPrice to set a price");
-        player.sendMessage("And /ts link to link activators/signs");
+        player.sendMessage(I18n.of("message.after_setup"));
     }
 
     /**

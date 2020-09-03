@@ -1,7 +1,7 @@
 package de.schottky.turnstile;
 
 import com.github.schottky.zener.api.Zener;
-import com.github.schottky.zener.command.Commands;
+import com.github.schottky.zener.command.util.Commands;
 import com.github.schottky.zener.localization.Language;
 import com.github.schottky.zener.localization.LanguageFile;
 import de.schottky.turnstile.command.BaseCommand;
