@@ -48,5 +48,6 @@
     "message.no_turnstile_block": "&cYou are not looking at a turnstile-block",
     "message.missing_name": "&cPlease specify a name",
     "message.turnstile_not_owned": "&cYou do not own a turnstile by that name",
-    "message.player_does_not_own_turnstile": "&cPlayer {player} does not own a turnstile by that name"
+    "message.player_does_not_own_turnstile": "&cPlayer {player} does not own a turnstile by that name",
+    "misc.simple_location": "({x}, {y}, {z}) at {world}"
 }

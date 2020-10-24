@@ -38,12 +38,13 @@ public class TurnstilePlugin extends JavaPlugin {
         TurnstileManager.createInstance(listener);
         TurnstilePersistence.loadAll();
         VaultHandler.init();
+
     }
 
     @Override
     public void onDisable() {
-        Zener.end();
         TurnstilePersistence.saveAll();
+        Zener.end();
     }
 
     private final DoorInteractListener doorInteractListener = new DoorInteractListener();

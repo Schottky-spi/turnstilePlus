@@ -16,21 +16,22 @@ import java.util.Set;
 
 public class DoorInteractListener implements Listener {
 
-    private final Set<Location> notInteractible = new HashSet<>();
+    private final Set<Location> notIntractable = new HashSet<>();
 
     public void addObservedLocation(Location location) {
-        this.notInteractible.add(location);
+        this.notIntractable.add(location);
     }
 
     public void removeObservedLocation(Location location) {
-        this.notInteractible.remove(location);
+        this.notIntractable.remove(location);
     }
 
     @EventHandler
     public void onDoorInteract(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK)
             return;
-        event.setCancelled(shouldCancel(event.getClickedBlock()));
+        if (shouldCancel(event.getClickedBlock()))
+            event.setCancelled(true);
     }
 
     @EventHandler
@@ -46,7 +47,7 @@ public class DoorInteractListener implements Listener {
             Location loc = door.getHalf() == Bisected.Half.TOP ?
                     block.getRelative(BlockFace.DOWN).getLocation() :
                     block.getLocation();
-            return notInteractible.contains(loc);
+            return notIntractable.contains(loc);
         }
         return false;
     }

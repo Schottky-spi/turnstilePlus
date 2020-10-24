@@ -9,6 +9,7 @@ import org.bukkit.configuration.serialization.ConfigurationSerializable;
 import org.bukkit.configuration.serialization.ConfigurationSerialization;
 
 import java.lang.reflect.Type;
+import java.util.HashMap;
 import java.util.Map;
 
 public class ConfigurationSerializableAdapter implements JsonCoder<ConfigurationSerializable> {
@@ -29,7 +30,7 @@ public class ConfigurationSerializableAdapter implements JsonCoder<Configuration
             Type typeOfSrc,
             JsonSerializationContext context)
     {
-        final Map<String,Object> map = src.serialize();
+        final Map<String,Object> map = new HashMap<>(src.serialize());
         map.put(ConfigurationSerialization.SERIALIZED_TYPE_KEY,ConfigurationSerialization.getAlias(src.getClass()));
         return context.serialize(map, new TypeToken<Map<String,Object>>(){}.getType());
     }

@@ -41,17 +41,23 @@
                         </goals>
                         <configuration>
                             <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <artifactSet>
+                                <includes>
+                                    <include>me.lucko:commodore</include>
+                                    <include>me.lucko:commodore-file</include>
+                                    <include>com.github.Schottky-spi:*</include>
+                                </includes>
+                            </artifactSet>
                             <relocations>
                                 <relocation>
                                     <pattern>com.github.schottky.zener</pattern>
-                                    <shadedPattern>com.github.schottky.zener.${project.artifactId}</shadedPattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}.zener</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>me.lucko.commodore</pattern>
+                                    <shadedPattern>${project.groupId}.${project.artifactId}.commodore</shadedPattern>
                                 </relocation>
                             </relocations>
-                            <artifactSet>
-                                <excludes>
-                                    <exclude>org.jetbrains:annotations:jar:*</exclude>
-                                </excludes>
-                            </artifactSet>
                         </configuration>
                     </execution>
                 </executions>
@@ -85,6 +91,10 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+        <repository>
+            <id>minecraft-repo</id>
+            <url>https://libraries.minecraft.net/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -97,7 +107,7 @@
         <dependency>
             <groupId>com.github.Schottky-spi</groupId>
             <artifactId>zener-command</artifactId>
-            <version>v1.6.2-SNAPSHOT</version>
+            <version>v1.6.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>

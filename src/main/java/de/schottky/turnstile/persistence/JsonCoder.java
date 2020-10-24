@@ -9,5 +9,4 @@ import com.google.gson.JsonSerializer;
  * @param <T> The type to serialize and deserialize
  */
 
-public interface JsonCoder<T> extends JsonSerializer<T>, JsonDeserializer<T> {
-}
+public interface JsonCoder<T> extends JsonSerializer<T>, JsonDeserializer<T> { }

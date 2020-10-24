@@ -9,12 +9,17 @@ import com.github.schottky.zener.command.resolver.Unresolved;
 import com.github.schottky.zener.localization.I18n;
 import de.schottky.turnstile.*;
 import de.schottky.turnstile.economy.ItemPrice;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Tag;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Cmd("turnstile")
 public class BaseCommand extends CommandBase {
@@ -93,7 +98,6 @@ public class BaseCommand extends CommandBase {
             sender.sendMessage(I18n.of("message.linkable_already_linked",
                     "linkable", linkable,
                     "name", linkable.linkedTurnstile().name()));
-
         } else {
             turnstile.link(linkable);
         }
@@ -108,6 +112,15 @@ public class BaseCommand extends CommandBase {
     public void locate(Turnstile turnstile, @Unresolved Player requester) {
         requester.sendMessage(I18n.of("message.turnstile_located",
                 "name", turnstile.name(),
-                "location", turnstile.location()));
+                "location", locToDescription(turnstile.location())));
+    }
+
+    private String locToDescription(Location location) {
+        final Map<String,Object> replacements = new HashMap<>();
+        replacements.put("x", location.getX());
+        replacements.put("y", location.getY());
+        replacements.put("z", location.getZ());
+        replacements.put("world", Optional.ofNullable(location.getWorld()).map(World::getName).orElse("null"));
+        return I18n.of("misc.simple_location", replacements);
     }
 }
